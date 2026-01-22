@@ -31,7 +31,7 @@ function draw() {
     let y = shape.diameter / 2;
 
     // draw the columns 
-    while (y < canvasHeight + shape.diameter / 2) {
+    while (y < canvasHeight) {
         let x = shape.diameter / 2;
 
         // alternate starting shape for each row
@@ -42,7 +42,7 @@ function draw() {
         }
 
         // draw the rows
-        while (x < canvasWidth + shape.diameter / 2) {
+        while (x < canvasWidth) {
             drawShape(x, y, shape);
             x += shape.diameter;
         }
@@ -51,8 +51,6 @@ function draw() {
         y += shape.diameter;
         beginWithCircle = !beginWithCircle;  
     }
-
-
 }
 
 // draw either a circle or square based on shape.type
