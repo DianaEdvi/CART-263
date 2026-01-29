@@ -1,22 +1,38 @@
 window.onload = setup;
 
-const main = document.querySelector('main');
-
-
-function setup(){
-    
+var tileIDs = {
+    green: 0,
+    blue: 0,
+    pink: 0,
+    orange: 0
 }
 
-// Create a pair of green tiles
+function setup(){
+    console.log("Setup complete");
+}
+const main = document.querySelector('main');
+
+// Create a pair of green tiles 
 function createGreenTilePair(){
     // First Tile
     const first = document.createElement('div');
-    first.textContent = "JJDJSJSSJJDN"; // Coded message
 
     // Add classes and append to main
     first.classList.add('tile');
     first.classList.add('green');
-    main.appendChild(first);
+    first.classList.add('column-layout');
+
+    const line1 = document.createElement('div');
+    line1.classList.add('green-text');
+    line1.textContent = "Ceasar drank 4 beers";
+
+    const line2 = document.createElement('div');
+    line2.classList.add('green-text');
+    line2.textContent = "JKBEFAJKBFAKB";
+
+    first.appendChild(line1);
+    first.appendChild(line2);
+
     
     // Second Tile
     const second = document.createElement('div');
@@ -26,21 +42,29 @@ function createGreenTilePair(){
     const searchBar = document.createElement('input');
     searchBar.type = 'search';
     searchBar.classList.add('search-bar');
-
+    
     // Create submit button
     const submitButton = document.createElement('button');
     submitButton.textContent = "Submit";
-
+    
     // Append search bar and button to second tile
     second.appendChild(searchBar);
     second.appendChild(submitButton);
-
+    
     // Add classes and append to main
     second.classList.add('tile');
     second.classList.add('green');
+
+    // Append tiles to main
+    main.appendChild(first);
     main.appendChild(second);
+
+    first.id = `green-tile-${tileIDs.green}`;
+    second.id = `green-tile-${tileIDs.green}`;
+    tileIDs.green++;
 }
 
+// Create a pair of blue tiles
 function createBlueTilePair(){
     // First Tile
     const first = document.createElement('div');
@@ -55,7 +79,7 @@ function createBlueTilePair(){
 
     // Add arrow image
     const arrow = document.createElement('img');
-    arrow.src = "../media/arrow.png";
+    arrow.src = "./media/arrow.png";
     arrow.classList.add('arrow-image');
     first.appendChild(arrow);
 
@@ -68,76 +92,146 @@ function createBlueTilePair(){
     // Append tiles to main
     main.appendChild(first);
     main.appendChild(second);
+
+    first.id = `blue-tile-${tileIDs.blue}`;
+    second.id = `blue-tile-${tileIDs.blue}`;
+    tileIDs.blue++;
+
+
+    // FUNCTIONALITY GOES SOMEWHERE ELSE? 
+    
+
 }
 
-function createPinkTilePair(){
-    const first = document.createElement('div');
-    first.classList.add('tile');
-    first.classList.add('pink');
+// Helper function to create a slider in pink tile
+function createSlider(label, initialValue) {
+    // Create container for slider and label
+    const container = document.createElement('div');
+    container.classList.add('slider-container');
+    container.textContent = label + ":";
 
+    // Create slider input
+    const slider = document.createElement('input');
+    slider.type = 'range';
+    slider.min = 0;
+    slider.max = 255;
+    slider.value = initialValue;
+
+    // Append slider to container
+    container.appendChild(slider);
+    
+    return { container, slider };
+}
+
+// Create a pair of pink tiles
+function createPinkTilePair() {
+    // First Tile
+    const first = document.createElement('div');
+    first.classList.add('tile', 'pink');
+
+    // Create sliders container
     const sliders = document.createElement('div');
     sliders.classList.add('sliders');
+    sliders.classList.add('column-layout');
     first.appendChild(sliders);
 
-    const rContainer = document.createElement('div');
-    rContainer.classList.add('slider-container');
-    sliders.appendChild(rContainer);
-    rContainer.textContent = "R:";
+    // Create sliders and append to sliders container
+    const r = createSlider("R", 255);
+    const g = createSlider("G", 192);
+    const b = createSlider("B", 203);
 
-    const r_slider = document.createElement('input');
-    r_slider.type = 'range';
-    r_slider.min = 0;
-    r_slider.max = 255;
-    r_slider.value = 255;
-    r_slider.classList.add('slider');
-    rContainer.appendChild(r_slider);
+    sliders.appendChild(r.container);
+    sliders.appendChild(g.container);
+    sliders.appendChild(b.container);
 
-    const gContainer = document.createElement('div');
-    gContainer.classList.add('slider-container');
-    sliders.appendChild(gContainer);
-    gContainer.textContent = "G:";
-
-    const g_slider = document.createElement('input');
-    g_slider.type = 'range';
-    g_slider.min = 0;
-    g_slider.max = 255;
-    g_slider.value = 192;
-    g_slider.classList.add('slider');
-    gContainer.appendChild(g_slider);
-
-    const bContainer = document.createElement('div');
-    bContainer.classList.add('slider-container');
-    sliders.appendChild(bContainer);
-    bContainer.textContent = "B:";
-
-    const b_slider = document.createElement('input');
-    b_slider.type = 'range';
-    b_slider.min = 0;
-    b_slider.max = 255;
-    b_slider.value = 203;
-    b_slider.classList.add('slider');
-    bContainer.appendChild(b_slider);
-
+    // Create color display box
     const colorDisplay = document.createElement('div');
     colorDisplay.classList.add('color-display');
     first.appendChild(colorDisplay);
 
-    main.appendChild(first);
-
+    // Second Tile
     const second = document.createElement('div');
-    second.classList.add('tile');
-    second.classList.add('pink');
-
+    second.classList.add('tile', 'pink');
+    
+    // Create larger color display box
     const colorDisplay2 = document.createElement('div');
     colorDisplay2.classList.add('color-display-large');
     second.appendChild(colorDisplay2);
-
+    
+    // Append tiles to main
     main.appendChild(second);
+    main.appendChild(first);
 
+    first.id = `pink-tile-${tileIDs.pink}`;
+    second.id = `pink-tile-${tileIDs.pink}`;
+    tileIDs.pink++;
 
+    // SEPARATE FUNCTIONALITY LATER 
+    // Update color display based on slider values
+
+    // Set random target color
+    function setRandomColor() {
+        var r = Math.floor(Math.random() * 256);
+        var g = Math.floor(Math.random() * 256);
+        var b = Math.floor(Math.random() * 256);
+
+        const rgbString = `rgb(${r}, ${g}, ${b})`;
+        colorDisplay2.style.backgroundColor = rgbString;
+    }
+
+    // Update color display based on slider values
+    function updateColor() {
+        const rValue = r.slider.value;
+        const gValue = g.slider.value;
+        const bValue = b.slider.value;
+        const rgbString = `rgb(${rValue}, ${gValue}, ${bValue})`;
+        colorDisplay.style.backgroundColor = rgbString;
+
+        // Check for match
+        checkMatch();
+    }
+
+    // Check if colors match within a threshold
+    function checkMatch() {      
+        const rValue = r.slider.value;
+        const gValue = g.slider.value;
+        const bValue = b.slider.value;
+        const targetColor = colorDisplay2.style.backgroundColor;
+        const currentColor = `rgb(${rValue}, ${gValue}, ${bValue})`;
+
+        console.log(targetColor, currentColor);
+
+        // Parse RGB values from target color
+        let targetR, targetG, targetB;
+        targetR = parseInt(targetColor.slice(4, targetColor.indexOf(',')));
+        targetG = parseInt(targetColor.slice(targetColor.indexOf(',') + 2, targetColor.lastIndexOf(',')));
+        targetB = parseInt(targetColor.slice(targetColor.lastIndexOf(',') + 2, targetColor.indexOf(')')));
+
+        // Calculate differences
+        const redDiff = Math.abs(targetR - rValue);
+        const greenDiff = Math.abs(targetG - gValue);
+        const blueDiff = Math.abs(targetB - bValue);
+
+        const threshold = 25; // Allowable difference
+
+        // If all differences are within the threshold, colors match
+        if (redDiff <= threshold && greenDiff <= threshold && blueDiff <= threshold) {
+            alert("Colors match!");
+        }
+    }
+
+    // Add event listeners to sliders
+    r.slider.addEventListener('input', updateColor);
+    g.slider.addEventListener('input', updateColor);
+    b.slider.addEventListener('input', updateColor);
+
+    // Initialize color display
+    setRandomColor();
+    updateColor();
 
 }
 
+// Create a pair of orange tiles
 function createOrangeTilePair(){
     const first = document.createElement('div');
     first.classList.add('tile');
@@ -159,21 +253,44 @@ function createOrangeTilePair(){
     first.appendChild(points);
     points.appendChild(point1);
     
-    main.appendChild(first);
-
+    
     const second = document.createElement('div');
     second.classList.add('tile');
     second.classList.add('orange');
-
+    
+    const plane = drawCartesianPlane();
+    second.appendChild(plane);
+    
+    main.appendChild(first);
     main.appendChild(second);
+
+    first.id = `orange-tile-${tileIDs.orange}`;
+    second.id = `orange-tile-${tileIDs.orange}`;
+    tileIDs.orange++;
 }
 
-function createSlider(){
-    
+function drawCartesianPlane() {
+    const plane = document.createElement('div');
+    plane.classList.add('cartesian-plane');
+
+    const gridSize = 6;
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            const cell = document.createElement('div');
+            cell.classList.add('grid-cell');
+            plane.appendChild(cell);
+        }
+    }
+    return plane;
 }
 
 createGreenTilePair();
 createGreenTilePair();
 createPinkTilePair();
+createPinkTilePair();
 createBlueTilePair();
 createOrangeTilePair();
+drawCartesianPlane();
+
+
+

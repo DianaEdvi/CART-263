@@ -24,8 +24,8 @@ main{
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20%; 
-    height: 20%;
+    width: 400px; 
+    height: 200px;
     font-size: 2em;
     text-align: center;
     color: black;
@@ -37,6 +37,9 @@ main{
     background-color: lightgreen;
 }
 
+.green-text{
+    font-size: 0.75em;
+}
 .pink{
     background-color: rgb(255, 172, 218);
     flex-direction: row;
@@ -49,6 +52,9 @@ main{
 
 .orange{
     background-color: rgb(253, 159, 96);
+}
+
+.column-layout{
     flex-direction: column;
 }
 
@@ -61,7 +67,6 @@ main{
 
 .sliders{
     display: flex;
-    flex-direction: column;
     align-items: center;
 }
 
@@ -85,6 +90,23 @@ main{
     border: 2px solid white;
     background-color: black;
 }
+
+.cartesian-plane{
+    margin: 10px;
+    width: 150px;
+    height: 150px;
+    border-bottom: 2px solid black;
+    border-left: 2px solid black;
+    background-color: white;
+}
+
+.grid-cell{
+    width: 25px;
+    height: 25px;
+    box-sizing: border-box;
+    border: 1px solid lightgrey;
+    float: left;
+}   
 
 .tile-image{
     width: 150px;
