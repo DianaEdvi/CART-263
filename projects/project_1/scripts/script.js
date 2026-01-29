@@ -87,7 +87,8 @@ function createBlueTilePair(){
     const second = document.createElement('div');
     second.classList.add('tile');
     second.classList.add('blue');
-    second.appendChild(img.cloneNode()); // Clone the image for the second tile
+    const img2 = img.cloneNode(); // Clone the image for the second tile
+    second.appendChild(img2);
 
     // Append tiles to main
     main.appendChild(first);
@@ -99,7 +100,31 @@ function createBlueTilePair(){
 
 
     // FUNCTIONALITY GOES SOMEWHERE ELSE? 
+
+    var degrees = [0, 45, 90, 135, 180, 225, 270, 315];
+    var randomIndex = Math.floor(Math.random() * degrees.length);
+    var randomDegree = degrees[randomIndex];
+
+    var img1Angle = 0;
+
+    img2.style.transform = "rotate(" + randomDegree + "deg)";
+    arrow.addEventListener('click', rotateImage);
     
+    function rotateImage() {
+        img1Angle += 45;
+        img.style.transform = "rotate(" + img1Angle + "deg)";
+        console.log("Arrow clicked, image rotated to " + img1Angle + " degrees");
+        checkMatch();
+    }
+
+    function checkMatch() {
+        var currentRotation = img1Angle % 360;
+        
+        if (currentRotation === randomDegree) {
+            alert("Images are aligned!");
+        }
+    }
+
 
 }
 
@@ -199,8 +224,6 @@ function createPinkTilePair() {
         const targetColor = colorDisplay2.style.backgroundColor;
         const currentColor = `rgb(${rValue}, ${gValue}, ${bValue})`;
 
-        console.log(targetColor, currentColor);
-
         // Parse RGB values from target color
         let targetR, targetG, targetB;
         targetR = parseInt(targetColor.slice(4, targetColor.indexOf(',')));
@@ -288,6 +311,7 @@ createGreenTilePair();
 createGreenTilePair();
 createPinkTilePair();
 createPinkTilePair();
+createBlueTilePair();
 createBlueTilePair();
 createOrangeTilePair();
 drawCartesianPlane();
