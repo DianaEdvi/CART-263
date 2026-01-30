@@ -275,38 +275,66 @@ function createPinkTilePair() {
     // Initialize color display
     setRandomColor();
     updateColor();
-
+    
 }
 
+// Helper function to draw a Cartesian plane
+function drawCartesianPlane(drawings) {
+    const plane = document.createElement('div');
+    plane.classList.add('cartesian-plane');
+    
+    const gridSize = 7;
+    let randomDrawingCoords = [];
+    
+    if (drawings) {
+        // Get all keys
+        const keys = Object.keys(drawings);
+        
+        // Pick a random key
+        const randomDrawing = keys[Math.floor(Math.random() * keys.length)];
+        console.log('Selected drawing:', randomDrawing);
+        randomDrawingCoords = drawings[randomDrawing];
+        console.log('Coordinates:', randomDrawingCoords);
+    }
+    
+    for (let i = 0; i < gridSize; i++) {
+        for (let j = 0; j < gridSize; j++) {
+            const cell = document.createElement('div');
+            cell.classList.add('grid-cell');
+            
+            // Check if this cell's coordinates match any in the random drawing
+            if (randomDrawingCoords.some(coord => coord[0] === j && coord[1] === i)) {
+                cell.classList.add('filled');
+            }
+            
+            plane.appendChild(cell);
+        }
+    }
+    
+    return plane;
+}
+
+var drawings = {
+    plus: [[3,1], [3,2], [3,3], [3,4], [3,5], [1,3], [2,3], [4,3], [5,3]],
+    x: [[1,1], [2,2], [3,3], [4,4], [5,5], [1,5], [2,4], [4,2], [5,1]],
+    minus: [[1,3], [2,3], [3,3], [4,3], [5,3]],
+    divide: [[1,3], [2,3], [3,3], [4,3], [5,3], [3,1], [3,5]]
+}
 // Create a pair of orange tiles
 function createOrangeTilePair(){
     const first = document.createElement('div');
     first.classList.add('tile');
     first.classList.add('orange');
-
-    const points = document.createElement('ul');
-    const point1 = document.createElement('li');
-    point1.classList.add('coordinate-point');
-    point1.textContent = "(0,0)";
-    const point2 = document.createElement('li');
-    point2.classList.add('coordinate-point');
-    point2.textContent = "(1,1)";
-    const point3 = document.createElement('li');
-    point3.classList.add('coordinate-point');
-    point3.textContent = "(2,2)";
-    points.appendChild(point1);
-    points.appendChild(point2);
-    points.appendChild(point3);
-    first.appendChild(points);
-    points.appendChild(point1);
     
+    const plane = drawCartesianPlane(drawings);
+    first.appendChild(plane);
     
     const second = document.createElement('div');
     second.classList.add('tile');
     second.classList.add('orange');
     
-    const plane = drawCartesianPlane();
-    second.appendChild(plane);
+    const plane2 = drawCartesianPlane();
+    second.appendChild(plane2);
     
     main.appendChild(first);
     main.appendChild(second);
@@ -314,30 +342,34 @@ function createOrangeTilePair(){
     first.id = `orange-tile-${tileIDs.orange}`;
     second.id = `orange-tile-${tileIDs.orange}`;
     tileIDs.orange++;
-}
 
-function drawCartesianPlane() {
-    const plane = document.createElement('div');
-    plane.classList.add('cartesian-plane');
-
-    const gridSize = 6;
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            const cell = document.createElement('div');
-            cell.classList.add('grid-cell');
-            plane.appendChild(cell);
-        }
-    }
-    return plane;
+    requestAnimationFrame(() => {
+        const cells = plane2.querySelectorAll('.grid-cell');
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                console.log('Cell clicked');
+                cell.classList.toggle('filled');
+            });
+        });
+});
 }
+// (0,0) = 
+
 
 createGreenTilePair();
-createGreenTilePair();
-createPinkTilePair();
-createPinkTilePair();
-createBlueTilePair();
-createBlueTilePair();
+// createGreenTilePair();
+// createPinkTilePair();
+// createPinkTilePair();
+// createBlueTilePair();
+// createBlueTilePair();
 createOrangeTilePair();
 
 
 
+
+// TODO 
+// Get checking for orange tile up and running
+// Decide whether to do either paired tiles, or any of the same color are ok 
+// Randomize tile generation
+// Find a way to layer them like in mahjong 
+// Playtest to see if it actually works 

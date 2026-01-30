@@ -93,10 +93,9 @@ main{
 
 .cartesian-plane{
     margin: 10px;
-    width: 150px;
-    height: 150px;
-    border-bottom: 2px solid black;
-    border-left: 2px solid black;
+    width: 175px;
+    height: 175px;
+    border: 2px solid black;
     background-color: white;
 }
 
@@ -107,6 +106,10 @@ main{
     border: 1px solid lightgrey;
     float: left;
 }   
+
+.filled{
+    background-color: darkgray;
+}
 
 .tile-image{
     width: 125px;
