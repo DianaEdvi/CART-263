@@ -1,4 +1,7 @@
 window.onload = setup;
+// import words from './media/ceasar.json' assert { type: 'json' };
+
+// console.log(words);
 
 var tileIDs = {
     green: 0,
@@ -6,6 +9,12 @@ var tileIDs = {
     pink: 0,
     orange: 0
 }
+
+var words = [
+    { "original": "Apple", "cipher": "Bqqmf", "skip": 1 },
+    { "original": "Chair", "cipher": "Dibjs", "skip": 2 },
+    { "original": "Mountain", "cipher": "Npvoubjo", "skip": 3 },
+]
 
 function setup(){
     console.log("Setup complete");
@@ -21,18 +30,15 @@ function createGreenTilePair(){
     first.classList.add('tile');
     first.classList.add('green');
     first.classList.add('column-layout');
-
+    
     const line1 = document.createElement('div');
     line1.classList.add('green-text');
-    line1.textContent = "Ceasar drank 4 beers";
-
+    
     const line2 = document.createElement('div');
     line2.classList.add('green-text');
-    line2.textContent = "JKBEFAJKBFAKB";
-
     first.appendChild(line1);
     first.appendChild(line2);
-
+    
     
     // Second Tile
     const second = document.createElement('div');
@@ -54,14 +60,32 @@ function createGreenTilePair(){
     // Add classes and append to main
     second.classList.add('tile');
     second.classList.add('green');
-
+    
     // Append tiles to main
     main.appendChild(first);
     main.appendChild(second);
-
+    
     first.id = `green-tile-${tileIDs.green}`;
     second.id = `green-tile-${tileIDs.green}`;
     tileIDs.green++;
+    
+    // FUNCTIONALITY 
+    function checkAnswer() {
+        const userInput = searchBar.value;
+        if (userInput === words[randomWord].original) {
+            alert("Correct!");
+        } else {
+            alert("Incorrect!");
+        }
+    }
+
+    submitButton.addEventListener('click', checkAnswer);
+
+    const randomWord = Math.floor(Math.random() * words.length);
+    const skip = words[randomWord].skip;
+    line1.textContent = "Ceasar drank " + skip + " beers";
+    line2.textContent = words[randomWord].cipher;
+    
 }
 
 // Create a pair of blue tiles
@@ -314,7 +338,6 @@ createPinkTilePair();
 createBlueTilePair();
 createBlueTilePair();
 createOrangeTilePair();
-drawCartesianPlane();
 
 
 
