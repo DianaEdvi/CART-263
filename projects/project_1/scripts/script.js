@@ -343,17 +343,34 @@ function createOrangeTilePair(){
     second.id = `orange-tile-${tileIDs.orange}`;
     tileIDs.orange++;
 
-    requestAnimationFrame(() => {
-        const cells = plane2.querySelectorAll('.grid-cell');
-        cells.forEach(cell => {
-            cell.addEventListener('click', () => {
-                console.log('Cell clicked');
-                cell.classList.toggle('filled');
-            });
+    const cells = plane2.querySelectorAll('.grid-cell');
+    
+    cells.forEach(cell => {
+        cell.addEventListener('click', () => {
+            console.log('Cell clicked');
+            cell.classList.toggle('filled');
+            checkMatch();
+            
         });
-});
+    });
+
+    function checkMatch() {
+        const cells1 = plane.querySelectorAll('.grid-cell');
+        const cells2 = plane2.querySelectorAll('.grid-cell');
+
+        if (cells1.length !== cells2.length) return false;
+
+        for (let i = 0; i < cells1.length; i++) {
+            const isFilled1 = cells1[i].classList.contains('filled');
+            const isFilled2 = cells2[i].classList.contains('filled');
+            
+            if (isFilled1 !== isFilled2) {
+                return false;
+            }
+        }
+        alert("Tiles match!");
+    }
 }
-// (0,0) = 
 
 
 createGreenTilePair();
