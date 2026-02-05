@@ -51,6 +51,12 @@ main {
     color: black;
     margin-bottom: 20px;
     border-radius: 8px;
+    transition: opacity 0.5s ease;
+
+}
+
+.fadeOut{
+    opacity: 0;
 }
 
 .green{
@@ -165,6 +171,6 @@ button{
   z-index: 1;
 }
 
-.image-overlay.reveal {
+.reveal {
   clip-path: circle(150% at 50% 50%);
 }

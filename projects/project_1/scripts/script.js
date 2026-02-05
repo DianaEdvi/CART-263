@@ -1,28 +1,77 @@
 window.onload = setup;
 
 // ------------------- DATA -------------------
+// I swear i could not figure out how to parse my json file and i give up
 const words = [
-  { original: "Apple", cipher: "Bqqmf", skip: 1 },
-  { original: "Chair", cipher: "Dibjs", skip: 1 },
-  { original: "Mountain", cipher: "Npvoubjo", skip: 1 },
-  { original: "River", cipher: "Sjwfs", skip: 1 },
-  { original: "Lantern", cipher: "Mboufso", skip: 1 },
-  { original: "Cloud", cipher: "Dmpve", skip: 1 },
-  { original: "Carpet", cipher: "Dbsqfu", skip: 1 },
-  { original: "Mirror", cipher: "Njssps", skip: 1 },
-  { original: "Bicycle", cipher: "Cjdzdmf", skip: 1 },
-  { original: "Notebook", cipher: "Opufcppl", skip: 1 },
-  { original: "Ocean", cipher: "Pdfbo", skip: 1 },
-  { original: "Key", cipher: "Lfz", skip: 1 },
-  { original: "Forest", cipher: "Gpsftu", skip: 1 },
-  { original: "Clock", cipher: "Dmpdl", skip: 1 },
-  { original: "Window", cipher: "Xjoepx", skip: 1 },
-  { original: "Spoon", cipher: "Tqppo", skip: 1 },
-  { original: "Backpack", cipher: "Cbdlqbdl", skip: 1 },
-  { original: "Candle", cipher: "Dboemf", skip: 1 },
-  { original: "Bridge", cipher: "Csjehf", skip: 1 },
-  { original: "Pillow", cipher: "Qjmmpx", skip: 1 },
-];
+    { "original": "apple", "cipher": "bqqmf", "skip": 1 },
+    { "original": "chair", "cipher": "dibjs", "skip": 1 },
+    { "original": "mountain", "cipher": "npvoubjo", "skip": 1 },
+    { "original": "river", "cipher": "sjwfs", "skip": 1 },
+    { "original": "lantern", "cipher": "mboufso", "skip": 1 },
+    { "original": "cloud", "cipher": "dmpve", "skip": 1 },
+    { "original": "carpet", "cipher": "dbsqfu", "skip": 1 },
+    { "original": "mirror", "cipher": "njssps", "skip": 1 },
+    { "original": "bicycle", "cipher": "cjdzdmf", "skip": 1 },
+    { "original": "notebook", "cipher": "opufcppl", "skip": 1 },
+    { "original": "ocean", "cipher": "pdfbo", "skip": 1 },
+    { "original": "key", "cipher": "lfz", "skip": 1 },
+    { "original": "forest", "cipher": "gpsftu", "skip": 1 },
+    { "original": "clock", "cipher": "dmpdl", "skip": 1 },
+    { "original": "window", "cipher": "xjoepx", "skip": 1 },
+    { "original": "spoon", "cipher": "tqppo", "skip": 1 },
+    { "original": "backpack", "cipher": "cbdlqbdl", "skip": 1 },
+    { "original": "candle", "cipher": "dboemf", "skip": 1 },
+    { "original": "bridge", "cipher": "csjehf", "skip": 1 },
+    { "original": "pillow", "cipher": "qjmmpx", "skip": 1 },
+    { "original": "castle", "cipher": "ecuvng", "skip": 2 },
+    { "original": "feather", "cipher": "hgcvjgt", "skip": 2 },
+    { "original": "guitar", "cipher": "iwkvct", "skip": 2 },
+    { "original": "helmet", "cipher": "jgnogv", "skip": 2 },
+    { "original": "garden", "cipher": "ictfgp", "skip": 2 },
+    { "original": "rocket", "cipher": "tqemgv", "skip": 2 },
+    { "original": "island", "cipher": "kuncpf", "skip": 2 },
+    { "original": "ladder", "cipher": "ncffgt", "skip": 2 },
+    { "original": "blanket", "cipher": "dncpmgv", "skip": 2 },
+    { "original": "compass", "cipher": "eqorcuu", "skip": 2 },
+    { "original": "dragon", "cipher": "ftciqp", "skip": 2 },
+    { "original": "tunnel", "cipher": "vwppgn", "skip": 2 },
+    { "original": "bottle", "cipher": "dqvvng", "skip": 2 },
+    { "original": "planet", "cipher": "rncpgv", "skip": 2 },
+    { "original": "hammer", "cipher": "jcoogt", "skip": 2 },
+    { "original": "library", "cipher": "nkdtcta", "skip": 2 },
+    { "original": "camera", "cipher": "ecogtc", "skip": 2 },
+    { "original": "shadow", "cipher": "ujcfqy", "skip": 2 },
+    { "original": "bracelet", "cipher": "dtcegngv", "skip": 2 },
+    { "original": "volcano", "cipher": "xqnecpq", "skip": 2 },
+    { "original": "treasure", "cipher": "wuhdvxuh", "skip": 3 },
+    { "original": "whale", "cipher": "zkdoh", "skip": 3 },
+    { "original": "elevator", "cipher": "hohydwru", "skip": 3 },
+    { "original": "mushroom", "cipher": "pxvkurrp", "skip": 3 },
+    { "original": "telescope", "cipher": "whohvfrsh", "skip": 3 },
+    { "original": "snowflake", "cipher": "vqrziodnh", "skip": 3 },
+    { "original": "anchor", "cipher": "dqfkru", "skip": 3 },
+    { "original": "pyramid", "cipher": "sbudplg", "skip": 3 },
+    { "original": "lighthouse", "cipher": "oljkwkrxvh", "skip": 3 },
+    { "original": "suitcase", "cipher": "vxlwfdvh", "skip": 3 },
+    { "original": "penguin", "cipher": "shqjxlq", "skip": 3 },
+    { "original": "orchard", "cipher": "rufkdug", "skip": 3 },
+    { "original": "keyboard", "cipher": "nhberdug", "skip": 3 },
+    { "original": "helmet", "cipher": "khophw", "skip": 3 },
+    { "original": "sandcastle", "cipher": "vdqgfdvwoh", "skip": 3 },
+    { "original": "waterfall", "cipher": "zdwhuidoo", "skip": 3 },
+    { "original": "coin", "cipher": "frlq", "skip": 3 },
+    { "original": "moonlight", "cipher": "prrqoljkw", "skip": 3 },
+    { "original": "backpack", "cipher": "edfnsdfn", "skip": 3 },
+    { "original": "tornado", "cipher": "wruqdgr", "skip": 3 },
+    { "original": "painting", "cipher": "temrxmrk", "skip": 4 },
+    { "original": "starfish", "cipher": "wxevjmwl", "skip": 4 },
+    { "original": "tunnel", "cipher": "xyrrip", "skip": 4 },
+    { "original": "fireplace", "cipher": "jmvitpegi", "skip": 4 },
+    { "original": "satellite", "cipher": "wexippmxi", "skip": 4 },
+    { "original": "meadow", "cipher": "qiehsa", "skip": 4 },
+    { "original": "hourglass", "cipher": "lsyvkpeww", "skip": 4 },
+    { "original": "compass", "cipher": "gsqteww", "skip": 4 }
+  ];
 
 const drawings = {
   plus: [[3,1], [3,2], [3,3], [3,4], [3,5], [1,3], [2,3], [4,3], [5,3]],
@@ -65,7 +114,7 @@ function createGreenTilePair() {
     // Create first tile
     const first = createTile('green');
     first.classList.add('column-layout');
-    const line1 = createTextDiv('green-text', `Ceasar drank ${word.skip} beers`);
+    const line1 = createTextDiv('green-text', `Ceasar drank -${word.skip} beers`);
     const line2 = createTextDiv('green-text', word.cipher);
     first.append(line1, line2);
 
@@ -120,7 +169,7 @@ function createPinkTilePair() {
     // Create the first tile 
     const first = createTile('pink');
     first.classList.add('column-layout');
-    const sliders = createSliders(['R', 'G', 'B'], [255, 192, 203]);
+    const sliders = createSliders();
     const colorDisplay = createDiv('color-display');
     first.append(sliders.container, colorDisplay);
 
@@ -138,12 +187,12 @@ function createPinkTilePair() {
 
     // loop through slider objects and set current display color to what the user inputs 
     // if the color matches, remove the tiles 
-    for (let i = 0; i < sliders.inputs.length; i++) {
-        sliders.inputs[i].addEventListener("input", function () {
+    for (let i = 0; i < sliders.sliders.length; i++) {
+        sliders.sliders[i].addEventListener("input", function () {
 
-            let red = sliders.inputs[0].value;
-            let green = sliders.inputs[1].value;
-            let blue = sliders.inputs[2].value;
+            let red = sliders.sliders[0].value;
+            let green = sliders.sliders[1].value;
+            let blue = sliders.sliders[2].value;
 
             let currentColor = "rgb(" + red + ", " + green + ", " + blue + ")";
             colorDisplay.style.backgroundColor = currentColor;
@@ -182,12 +231,14 @@ function createOrangeTilePair() {
 }
 
 // ------------------- HELPER FUNCTIONS -------------------
+// creates a div, assigns the appropriate tile and color class and returns it 
 function createTile(color) {
   const tile = document.createElement('div');
   tile.classList.add('tile', color);
   return tile;
 }
 
+// creates and returns a div with the requested class name and text assigned 
 function createTextDiv(className, text) {
   const div = document.createElement('div');
   div.classList.add(className);
@@ -195,6 +246,7 @@ function createTextDiv(className, text) {
   return div;
 }
 
+// creates and returns an input type with the requested classname attached
 function createInput(type, className) {
   const input = document.createElement('input');
   input.type = type;
@@ -202,6 +254,7 @@ function createInput(type, className) {
   return input;
 }
 
+// creates and returns a button with the passed in text and callback function
 function createButton(text, callback) {
   const btn = document.createElement('button');
   btn.textContent = text;
@@ -209,6 +262,7 @@ function createButton(text, callback) {
   return btn;
 }
 
+// creates and returns an image with the class name assigned to it, along with the specified src
 function createImage(src, className) {
   const img = document.createElement('img');
   img.src = src;
@@ -216,105 +270,168 @@ function createImage(src, className) {
   return img;
 }
 
+// creates and returns a plain div and assigns a class to it for styling
 function createDiv(className) {
   const div = document.createElement('div');
   div.classList.add(className);
   return div;
 }
 
-function createSliders(labels, values) {
-  const container = document.createElement('div');
-  container.classList.add('sliders', 'column-layout');
-  const inputs = labels.map((label, i) => {
-    const sliderContainer = document.createElement('div');
-    sliderContainer.classList.add('slider-container');
-    sliderContainer.textContent = `${label}:`;
-    const slider = document.createElement('input');
-    slider.type = 'range';
-    slider.min = 0;
-    slider.max = 255;
-    slider.value = values[i];
-    sliderContainer.appendChild(slider);
-    container.appendChild(sliderContainer);
-    return slider;
-  });
-  return { container, inputs };
+// Create RGB sliders and return the container div and the slider inputs
+function createSliders() {
+    // Create a main container div to hold all sliders
+    const container = document.createElement('div');
+    container.classList.add('sliders', 'column-layout');
+
+    // This array will store the actual slider input elements
+    const sliders = [];
+    const colorLables = ['R', 'G', 'B'];
+
+    // Loop through each color (r, g, b)
+    for (let i = 0; i < colorLables.length; i++) {
+        // Create a div to hold the label and the slider
+        const sliderBox = document.createElement('div');
+        sliderBox.classList.add('slider-container');
+
+        // Add text for the label
+        sliderBox.textContent = colorLables[i] + ":";
+
+        // Create the slider input
+        const slider = document.createElement('input');
+        slider.type = 'range';   
+        slider.min = 0;           
+        slider.max = 255;        
+        slider.value = 0; 
+
+        // put the slider inside the sliderBox
+        sliderBox.appendChild(slider);
+
+        // add the sliderBox to the main container
+        container.appendChild(sliderBox);
+
+        // store the slider 
+        sliders.push(slider);
+    }
+
+    // return both the container and the array of sliders
+    return {
+        container: container,
+        sliders: sliders
+    };
 }
 
+// creates and returns a random rgb value 
 function getRandomRGB() {
-  const r = Math.floor(Math.random() * 256);
-  const g = Math.floor(Math.random() * 256);
-  const b = Math.floor(Math.random() * 256);
-  return `rgb(${r},${g},${b})`;
+    const r = Math.floor(Math.random() * 256);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 256);
+    return `rgb(${r},${g},${b})`;
 }
 
-function colorsMatch(color1, color2, threshold = 25) {
-  const [r1, g1, b1] = color1.match(/\d+/g).map(Number);
-  const [r2, g2, b2] = color2.match(/\d+/g).map(Number);
-  return Math.abs(r1 - r2) <= threshold &&
-         Math.abs(g1 - g2) <= threshold &&
-         Math.abs(b1 - b2) <= threshold;
+// Compare two RGB colors to see if they match within a threshold
+function colorsMatch(currentColor, targetColor, threshold = 30) {
+    // extract numbers from strings like "rgb(255, 192, 203)"
+    const current = currentColor.match(/\d+/g).map(Number); // [r, g, b]
+    const target = targetColor.match(/\d+/g).map(Number);   // [r, g, b]
+
+    // calculate differences for each channel
+    const redDiff = Math.abs(current[0] - target[0]);
+    const greenDiff = Math.abs(current[1] - target[1]);
+    const blueDiff = Math.abs(current[2] - target[2]);
+
+    // return true only if all channels are within the threshold
+    return redDiff <= threshold && greenDiff <= threshold && blueDiff <= threshold;
 }
 
+// creates and returns a grid 
 function drawCartesianPlane(drawings = null) {
   const plane = createDiv('cartesian-plane');
   const gridSize = 7;
   let coords = [];
 
+  // if an array of drawings is passed in, pick a random one and grab its coordinates 
   if (drawings) {
     const keys = Object.keys(drawings);
     const randomKey = keys[Math.floor(Math.random() * keys.length)];
     coords = drawings[randomKey];
   }
 
-  for (let y = 0; y < gridSize; y++) {
-    for (let x = 0; x < gridSize; x++) {
-      const cell = createDiv('grid-cell');
-      if (coords.some(([cx, cy]) => cx === x && cy === y)) cell.classList.add('filled');
-      plane.appendChild(cell);
+    // create a grid of cells for the plane
+    for (let row = 0; row < gridSize; row++) {
+        for (let col = 0; col < gridSize; col++) {
+
+            // create a new cell div
+            const cell = createDiv('grid-cell');
+
+            // Check if this cell should be filled based on coords and fill them
+            // (only applies for preset drawing)
+            for (let i = 0; i < coords.length; i++) {
+                const [coordX, coordY] = coords[i];
+                if (coordX === col && coordY === row) {
+                    cell.classList.add('filled');
+                    break; 
+                }
+            }
+
+            // Add the cell to the plane
+            plane.appendChild(cell);
+        }
     }
-  }
+
   return plane;
 }
 
+// Check if two grids match exactly
 function checkPlaneMatch(plane1, plane2) {
-  const cells1 = plane1.querySelectorAll('.grid-cell');
-  const cells2 = plane2.querySelectorAll('.grid-cell');
-  return Array.from(cells1).every((cell, i) =>
-    cell.classList.contains('filled') === cells2[i].classList.contains('filled')
-  );
+    // get all the cells from both planes
+    const cells1 = plane1.querySelectorAll('.grid-cell');
+    const cells2 = plane2.querySelectorAll('.grid-cell');
+
+    // loop through each cell and compare
+    for (let i = 0; i < cells1.length; i++) {
+        const cell1Filled = cells1[i].classList.contains('filled');
+        const cell2Filled = cells2[i].classList.contains('filled');
+
+        // if any cell is different, the planes don't match
+        if (cell1Filled !== cell2Filled) {
+            return false;
+        }
+    }
+    return true;
 }
 
+// creates a path to a random image and returns the string 
 function pickRandomBackgroundImage(){
-    // const containerDiv = document.createElement('div');
-
     var path = "./media/random";
     var numImages = 10;
 
     var imgs = []
+    // create the image elements
     for(var i = 0; i < numImages; i++){
         imgs[i] = document.createElement('img');
         imgs[i].src = path + i + ".jpg";
     }
     var randomIndex = Math.floor(Math.random() * 10);
-    console.log(randomIndex);
     var random = imgs[randomIndex];
     return path + randomIndex + ".jpg";
 }
 
+// once two tiles are matched, they are removed from the scene 
 function removeMatchedTiles(tile1, tile2) {
     if (!tile1 || !tile2) return;
 
-    tile1.style.transition = 'opacity 0.5s';
-    tile2.style.transition = 'opacity 0.5s';
-    tile1.style.opacity = 0;
-    tile2.style.opacity = 0;
+    tile1.classList.add('fadeOut');
+    tile2.classList.add('fadeOut');
 
+    // fade out 
     setTimeout(() => {
         tile1.remove();
         tile2.remove();
 
+        // collect remaining tiles
         const remainingTiles = container.querySelectorAll('.tile');
+
+        // if all are cleared, generate an image to display and animate its reveal 
         if (remainingTiles.length === 0) {
             const imgPath = pickRandomBackgroundImage();
 
@@ -328,6 +445,7 @@ function removeMatchedTiles(tile1, tile2) {
                 overlay.classList.add('reveal');
             });
 
+            // when the transition is over, set the image
             overlay.addEventListener('transitionend', () => {
                 container.style.backgroundImage = `url(${imgPath})`;
                 overlay.remove();
