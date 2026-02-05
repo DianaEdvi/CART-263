@@ -1,7 +1,6 @@
 window.onload = setup;
 
-const tileIDs = { green: 0, blue: 0, pink: 0, orange: 0 };
-
+// ------------------- DATA -------------------
 const words = [
   { original: "Apple", cipher: "Bqqmf", skip: 1 },
   { original: "Chair", cipher: "Dibjs", skip: 1 },
@@ -25,9 +24,15 @@ const words = [
   { original: "Pillow", cipher: "Qjmmpx", skip: 1 },
 ];
 
+const drawings = {
+  plus: [[3,1], [3,2], [3,3], [3,4], [3,5], [1,3], [2,3], [4,3], [5,3]],
+  x: [[1,1], [2,2], [3,3], [4,4], [5,5], [1,5], [2,4], [4,2], [5,1]],
+  minus: [[1,3], [2,3], [3,3], [4,3], [5,3]],
+  divide: [[1,3], [2,3], [3,3], [4,3], [5,3], [3,1], [3,5]]
+};
+
 const main = document.querySelector('main');
 
-// const container = pickRandomBackgroundImage();
 let container = document.createElement('div');
 container.classList.add('container');
 main.appendChild(container);
@@ -53,105 +58,133 @@ function createTilePair(color) {
 
 // ------------------- GREEN TILE -------------------
 function createGreenTilePair() {
-  const randomWordIndex = Math.floor(Math.random() * words.length);
-  const word = words[randomWordIndex];
+    // Get random word 
+    const randomWordIndex = Math.floor(Math.random() * words.length);
+    const word = words[randomWordIndex];
 
-  const first = createTile('green', ['column-layout']);
-  const line1 = createTextDiv('green-text', `Ceasar drank ${word.skip} beers`);
-  const line2 = createTextDiv('green-text', word.cipher);
-  first.append(line1, line2);
+    // Create first tile
+    const first = createTile('green');
+    first.classList.add('column-layout');
+    const line1 = createTextDiv('green-text', `Ceasar drank ${word.skip} beers`);
+    const line2 = createTextDiv('green-text', word.cipher);
+    first.append(line1, line2);
 
-  const second = createTile('green');
-  const searchBar = createInput('search', 'search-bar');
-  const submitButton = createButton('Submit', () => {
-    if (searchBar.value === word.original) removeMatchedTiles(first, second);
-  });
-  second.append(searchBar, submitButton);
+    // Create second tile 
+    // if the submitted word matches, remove the tile 
+    const second = createTile('green');
+    const searchBar = createInput('search', 'search-bar');
+    const submitButton = createButton('Submit', () => {
+        if (searchBar.value === word.original) removeMatchedTiles(first, second);
+    });
+    second.append(searchBar, submitButton);
 
-  appendTiles(first, second, 'green');
+    // Add tiles to container 
+    container.append(first, second);
+
 }
 
 // ------------------- BLUE TILE -------------------
 function createBlueTilePair() {
-  const first = createTile('blue');
-  const img = createImage('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/220px-Cat03.jpg', 'tile-image');
-  const arrow = createImage('./media/arrow.png', 'arrow-image');
-  first.append(img, arrow);
+    // Create first tile 
+    const first = createTile('blue');
+    const img = createImage('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/220px-Cat03.jpg', 'tile-image');
+    const arrow = createImage('./media/arrow.png', 'arrow-image');
+    first.append(img, arrow);
 
-  const second = createTile('blue');
-  const img2 = img.cloneNode();
-  second.appendChild(img2);
+    // Create second tile 
+    const second = createTile('blue');
+    const img2 = img.cloneNode();
+    second.appendChild(img2);
 
-  appendTiles(first, second, 'blue');
+    // Add tiles to the container
+    container.append(first, second);
 
-  // Rotation logic
-  const degrees = [0, 45, 90, 135, 180, 225, 270, 315];
-  const targetRotation = degrees[Math.floor(Math.random() * degrees.length)];
-  let currentRotation = 0;
-  img2.style.transform = `rotate(${targetRotation}deg)`;
+    // Rotation logic
+    const degrees = [0, 45, 90, 135, 180, 225, 270, 315];
+    const randomIndex = Math.floor(Math.random() * degrees.length);
+    const targetRotation = degrees[randomIndex];
+    let currentRotation = 0;
+    img2.style.transform = `rotate(${targetRotation}deg)`; // set rotation of the target image 
 
-  arrow.addEventListener('click', () => {
-    currentRotation += 45;
-    img.style.transform = `rotate(${currentRotation}deg)`;
-    if ((currentRotation % 360) === targetRotation) removeMatchedTiles(first, second);
-  });
+    // Rotate the user's image when clicking on arrow 
+    // If the rotation matches, remove the tile 
+    arrow.addEventListener('click', () => {
+        currentRotation += 45;
+        img.style.transform = `rotate(${currentRotation}deg)`;
+        if ((currentRotation % 360) === targetRotation) removeMatchedTiles(first, second);
+    });
 }
 
 // ------------------- PINK TILE -------------------
 function createPinkTilePair() {
-  const first = createTile('pink', ['column-layout']);
-  const sliders = createSliders(['R', 'G', 'B'], [255, 192, 203]);
-  const colorDisplay = createDiv('color-display');
-  first.append(sliders.container, colorDisplay);
+    // Create the first tile 
+    const first = createTile('pink');
+    first.classList.add('column-layout');
+    const sliders = createSliders(['R', 'G', 'B'], [255, 192, 203]);
+    const colorDisplay = createDiv('color-display');
+    first.append(sliders.container, colorDisplay);
 
-  const second = createTile('pink');
-  const targetColorDisplay = createDiv('color-display-large');
-  second.appendChild(targetColorDisplay);
+    // Create the second tile
+    const second = createTile('pink');
+    const targetColorDisplay = createDiv('color-display-large');
+    second.appendChild(targetColorDisplay);
 
-  appendTiles(second, first, 'pink');
+    // Add tiles to container 
+    container.append(first, second);
 
-  // Color matching
-  const targetColor = getRandomRGB();
-  targetColorDisplay.style.backgroundColor = targetColor;
-  sliders.inputs.forEach(input => input.addEventListener('input', () => {
-    const currentColor = `rgb(${sliders.inputs[0].value}, ${sliders.inputs[1].value}, ${sliders.inputs[2].value})`;
-    colorDisplay.style.backgroundColor = currentColor;
-    if (colorsMatch(currentColor, targetColor)) removeMatchedTiles(first, second);;
-  }));
+    // Color matching logic
+    const targetColor = getRandomRGB();
+    targetColorDisplay.style.backgroundColor = targetColor;
+
+    // loop through slider objects and set current display color to what the user inputs 
+    // if the color matches, remove the tiles 
+    for (let i = 0; i < sliders.inputs.length; i++) {
+        sliders.inputs[i].addEventListener("input", function () {
+
+            let red = sliders.inputs[0].value;
+            let green = sliders.inputs[1].value;
+            let blue = sliders.inputs[2].value;
+
+            let currentColor = "rgb(" + red + ", " + green + ", " + blue + ")";
+            colorDisplay.style.backgroundColor = currentColor;
+
+            if (colorsMatch(currentColor, targetColor)) {
+                removeMatchedTiles(first, second);
+            }
+
+        });
+    }
+
 }
 
 // ------------------- ORANGE TILE -------------------
-const drawings = {
-  plus: [[3,1], [3,2], [3,3], [3,4], [3,5], [1,3], [2,3], [4,3], [5,3]],
-  x: [[1,1], [2,2], [3,3], [4,4], [5,5], [1,5], [2,4], [4,2], [5,1]],
-  minus: [[1,3], [2,3], [3,3], [4,3], [5,3]],
-  divide: [[1,3], [2,3], [3,3], [4,3], [5,3], [3,1], [3,5]]
-};
-
 function createOrangeTilePair() {
-  const first = createTile('orange');
-  const second = createTile('orange');
+    // Create tiles
+    const first = createTile('orange');
+    const second = createTile('orange');
 
-  const plane1 = drawCartesianPlane(drawings);
-  const plane2 = drawCartesianPlane();
+    const plane1 = drawCartesianPlane(drawings);
+    const plane2 = drawCartesianPlane();
 
-  first.appendChild(plane1);
-  second.appendChild(plane2);
+    first.appendChild(plane1);
+    second.appendChild(plane2);
 
-  appendTiles(first, second, 'orange');
+    container.append(first, second);
 
-  plane2.querySelectorAll('.grid-cell').forEach(cell => {
-    cell.addEventListener('click', () => {
-      cell.classList.toggle('filled');
-      if (checkPlaneMatch(plane1, plane2)) removeMatchedTiles(first, second);;
+
+    // fill tiles of user's grid
+    plane2.querySelectorAll('.grid-cell').forEach(cell => {
+        cell.addEventListener('click', () => {
+        cell.classList.toggle('filled');
+        if (checkPlaneMatch(plane1, plane2)) removeMatchedTiles(first, second);;
+        });
     });
-  });
 }
 
 // ------------------- HELPER FUNCTIONS -------------------
-function createTile(color, classes = []) {
+function createTile(color) {
   const tile = document.createElement('div');
-  tile.classList.add('tile', color, ...classes);
+  tile.classList.add('tile', color);
   return tile;
 }
 
@@ -187,13 +220,6 @@ function createDiv(className) {
   const div = document.createElement('div');
   div.classList.add(className);
   return div;
-}
-
-function appendTiles(first, second, color) {
-  first.id = `${color}-tile-${tileIDs[color]}`;
-  second.id = `${color}-tile-${tileIDs[color]}`;
-  container.append(first, second);
-  tileIDs[color]++;
 }
 
 function createSliders(labels, values) {
