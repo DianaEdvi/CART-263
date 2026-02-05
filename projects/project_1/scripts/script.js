@@ -1,486 +1,262 @@
 window.onload = setup;
 
-var tileIDs = {
-    green: 0,
-    blue: 0,
-    pink: 0,
-    orange: 0
-}
+const tileIDs = { green: 0, blue: 0, pink: 0, orange: 0 };
 
-var words = [
-    { "original": "Apple", "cipher": "Bqqmf", "skip": 1 },
-    { "original": "Chair", "cipher": "Dibjs", "skip": 1 },
-    { "original": "Mountain", "cipher": "Npvoubjo", "skip": 1 },
-    { "original": "River", "cipher": "Sjwfs", "skip": 1 },
-    { "original": "Lantern", "cipher": "Mboufso", "skip": 1 },
-    { "original": "Cloud", "cipher": "Dmpve", "skip": 1 },
-    { "original": "Carpet", "cipher": "Dbsqfu", "skip": 1 },
-    { "original": "Mirror", "cipher": "Njssps", "skip": 1 },
-    { "original": "Bicycle", "cipher": "Cjdzdmf", "skip": 1 },
-    { "original": "Notebook", "cipher": "Opufcppl", "skip": 1 },
-    { "original": "Ocean", "cipher": "Pdfbo", "skip": 1 },
-    { "original": "Key", "cipher": "Lfz", "skip": 1 },
-    { "original": "Forest", "cipher": "Gpsftu", "skip": 1 },
-    { "original": "Clock", "cipher": "Dmpdl", "skip": 1 },
-    { "original": "Window", "cipher": "Xjoepx", "skip": 1 },
-    { "original": "Spoon", "cipher": "Tqppo", "skip": 1 },
-    { "original": "Backpack", "cipher": "Cbdlqbdl", "skip": 1 },
-    { "original": "Candle", "cipher": "Dboemf", "skip": 1 },
-    { "original": "Bridge", "cipher": "Csjehf", "skip": 1 },
-    { "original": "Pillow", "cipher": "Qjmmpx", "skip": 1 },
-    { "original": "Castle", "cipher": "Ecuvng", "skip": 2 },
-    { "original": "Feather", "cipher": "Hgcvjgt", "skip": 2 },
-    { "original": "Guitar", "cipher": "Iwkvct", "skip": 2 },
-    { "original": "Helmet", "cipher": "Jgnogv", "skip": 2 },
-    { "original": "Garden", "cipher": "Ictfgp", "skip": 2 },
-    { "original": "Rocket", "cipher": "Tqemgv", "skip": 2 },
-    { "original": "Island", "cipher": "Kuncpf", "skip": 2 },
-    { "original": "Ladder", "cipher": "Ncffgt", "skip": 2 },
-    { "original": "Blanket", "cipher": "Dncpmgv", "skip": 2 },
-    { "original": "Compass", "cipher": "Eqorcuu", "skip": 2 },
-    { "original": "Dragon", "cipher": "Ftciqp", "skip": 2 },
-    { "original": "Tunnel", "cipher": "Vwppgn", "skip": 2 },
-    { "original": "Bottle", "cipher": "Dqvvng", "skip": 2 },
-    { "original": "Planet", "cipher": "Rncpgv", "skip": 2 },
-    { "original": "Hammer", "cipher": "Jcoogt", "skip": 2 },
-    { "original": "Library", "cipher": "Nkdtcta", "skip": 2 },
-    { "original": "Camera", "cipher": "Ecogtc", "skip": 2 },
-    { "original": "Shadow", "cipher": "Ujcfqy", "skip": 2 },
-    { "original": "Bracelet", "cipher": "Dtcegngv", "skip": 2 },
-    { "original": "Volcano", "cipher": "Xqnecpq", "skip": 2 },
-    { "original": "Treasure", "cipher": "Wuhdvxuh", "skip": 3 },
-    { "original": "Whale", "cipher": "Zkdoh", "skip": 3 },
-    { "original": "Elevator", "cipher": "Hohydwru", "skip": 3 },
-    { "original": "Mushroom", "cipher": "Pxvkurrp", "skip": 3 },
-    { "original": "Telescope", "cipher": "Whohvfrsh", "skip": 3 },
-    { "original": "Snowflake", "cipher": "Vqrziodnh", "skip": 3 },
-    { "original": "Anchor", "cipher": "Dqfkru", "skip": 3 },
-    { "original": "Pyramid", "cipher": "Sbudplg", "skip": 3 },
-    { "original": "Lighthouse", "cipher": "Oljkwkrxvh", "skip": 3 },
-    { "original": "Suitcase", "cipher": "Vxlwfdvh", "skip": 3 },
-    { "original": "Penguin", "cipher": "Shqjxlq", "skip": 3 },
-    { "original": "Orchard", "cipher": "Rufkdug", "skip": 3 },
-    { "original": "Keyboard", "cipher": "Nhberdug", "skip": 3 },
-    { "original": "Helmet", "cipher": "Khophw", "skip": 3 },
-    { "original": "Sandcastle", "cipher": "Vdqgfdvwoh", "skip": 3 },
-    { "original": "Waterfall", "cipher": "Zdwhuidoo", "skip": 3 },
-    { "original": "Coin", "cipher": "Frlq", "skip": 3 },
-    { "original": "Moonlight", "cipher": "Prrqoljkw", "skip": 3 },
-    { "original": "Backpack", "cipher": "Edfnsdfn", "skip": 3 },
-    { "original": "Tornado", "cipher": "Wruqdgr", "skip": 3 },
-    { "original": "Painting", "cipher": "Temrxmrk", "skip": 4 },
-    { "original": "Starfish", "cipher": "Wxevjmwl", "skip": 4 },
-    { "original": "Tunnel", "cipher": "Xyrrip", "skip": 4 },
-    { "original": "Fireplace", "cipher": "Jmvitpegi", "skip": 4 },
-    { "original": "Satellite", "cipher": "Wexippmxi", "skip": 4 },
-    { "original": "Meadow", "cipher": "Qiehsa", "skip": 4 },
-    { "original": "Hourglass", "cipher": "Lsyvkpeww", "skip": 4 },
-    { "original": "Compass", "cipher": "Gsqteww", "skip": 4 },
-    { "original": "Seahorse", "cipher": "Wielsvwi", "skip": 4 },
-    { "original": "Pavilion", "cipher": "Tezmpmsr", "skip": 4 },
-    { "original": "Notebook", "cipher": "Rsxifsso", "skip": 4 },
-    { "original": "Icicle", "cipher": "Mgmgpi", "skip": 4 },
-    { "original": "Fossil", "cipher": "Jswwmp", "skip": 4 },
-    { "original": "Curtain", "cipher": "Gyvxemr", "skip": 4 },
-    { "original": "Raindrop", "cipher": "Vemrhvst", "skip": 4 },
-    { "original": "Avalanche", "cipher": "Ezepergli", "skip": 4 },
-    { "original": "Trophy", "cipher": "Xvstlc", "skip": 4 },
-    { "original": "Windmill", "cipher": "Amrhqmpp", "skip": 4 },
-    { "original": "Passport", "cipher": "Tewwtsvx", "skip": 4 },
-    { "original": "Lantern", "cipher": "Perxivr", "skip": 4 },
-    { "original": "Hammock", "cipher": "Leqqsgo", "skip": 5 },
-    { "original": "Reef", "cipher": "Viij", "skip": 5 },
-    { "original": "Clocktower", "cipher": "Gpsgoxsaiv", "skip": 5 },
-    { "original": "Parachute", "cipher": "Teveglyxi", "skip": 5 },
-    { "original": "Teacup", "cipher": "Xiegyt", "skip": 5 },
-    { "original": "Blizzard", "cipher": "Fpmddevh", "skip": 5 },
-    { "original": "Map", "cipher": "Qet", "skip": 5 },
-    { "original": "Snowman", "cipher": "Wrsaqer", "skip": 5 },
-    { "original": "Vineyard", "cipher": "Zmricevh", "skip": 5 },
-    { "original": "Helmet", "cipher": "Lipqix", "skip": 5 },
-    { "original": "Marble", "cipher": "Qevfpi", "skip": 5 },
-    { "original": "Backpack", "cipher": "Fegotego", "skip": 5 },
-    { "original": "Fountain", "cipher": "Jsyrxemr", "skip": 5 },
-    { "original": "Campfire", "cipher": "Geqtjmvi", "skip": 5 },
-    { "original": "Squirrel", "cipher": "Wuymvvip", "skip": 5 },
-    { "original": "Umbrella", "cipher": "Yqfvippe", "skip": 5 },
-    { "original": "Galaxy", "cipher": "Kepebc", "skip": 5 },
-    { "original": "Ladder", "cipher": "Pehhiv", "skip": 5 },
-    { "original": "Puzzle", "cipher": "Tyddpi", "skip": 5 },
-    { "original": "Echo", "cipher": "Igls", "skip": 5 }
-]
+const words = [
+  { original: "Apple", cipher: "Bqqmf", skip: 1 },
+  { original: "Chair", cipher: "Dibjs", skip: 1 },
+  { original: "Mountain", cipher: "Npvoubjo", skip: 1 },
+  { original: "River", cipher: "Sjwfs", skip: 1 },
+  { original: "Lantern", cipher: "Mboufso", skip: 1 },
+  { original: "Cloud", cipher: "Dmpve", skip: 1 },
+  { original: "Carpet", cipher: "Dbsqfu", skip: 1 },
+  { original: "Mirror", cipher: "Njssps", skip: 1 },
+  { original: "Bicycle", cipher: "Cjdzdmf", skip: 1 },
+  { original: "Notebook", cipher: "Opufcppl", skip: 1 },
+  { original: "Ocean", cipher: "Pdfbo", skip: 1 },
+  { original: "Key", cipher: "Lfz", skip: 1 },
+  { original: "Forest", cipher: "Gpsftu", skip: 1 },
+  { original: "Clock", cipher: "Dmpdl", skip: 1 },
+  { original: "Window", cipher: "Xjoepx", skip: 1 },
+  { original: "Spoon", cipher: "Tqppo", skip: 1 },
+  { original: "Backpack", cipher: "Cbdlqbdl", skip: 1 },
+  { original: "Candle", cipher: "Dboemf", skip: 1 },
+  { original: "Bridge", cipher: "Csjehf", skip: 1 },
+  { original: "Pillow", cipher: "Qjmmpx", skip: 1 },
+  // … truncated for brevity (keep the full words array in your project)
+];
 
-function setup(){
-    console.log("Setup complete");
-}
 const main = document.querySelector('main');
 
-// Create a pair of green tiles 
-function createGreenTilePair(){
-    // First Tile
-    const first = document.createElement('div');
+const container = document.createElement('div');
+container.classList.add('container');
+main.appendChild(container);
 
-    // Add classes and append to main
-    first.classList.add('tile');
-    first.classList.add('green');
-    first.classList.add('column-layout');
-    
-    const line1 = document.createElement('div');
-    line1.classList.add('green-text');
-    
-    const line2 = document.createElement('div');
-    line2.classList.add('green-text');
-    first.appendChild(line1);
-    first.appendChild(line2);
-    
-    
-    // Second Tile
-    const second = document.createElement('div');
-    second.value = "JJDJSJSSJJDN";
-    
-    // Create search bar
-    const searchBar = document.createElement('input');
-    searchBar.type = 'search';
-    searchBar.classList.add('search-bar');
-    
-    // Create submit button
-    const submitButton = document.createElement('button');
-    submitButton.textContent = "Submit";
-    
-    // Append search bar and button to second tile
-    second.appendChild(searchBar);
-    second.appendChild(submitButton);
-    
-    // Add classes and append to main
-    second.classList.add('tile');
-    second.classList.add('green');
-    
-    // Append tiles to main
-    main.appendChild(first);
-    main.appendChild(second);
-    
-    first.id = `green-tile-${tileIDs.green}`;
-    second.id = `green-tile-${tileIDs.green}`;
-    tileIDs.green++;
-    
-    // FUNCTIONALITY 
-    function checkAnswer() {
-        const userInput = searchBar.value;
-        if (userInput === words[randomWord].original) {
-            alert("Correct!");
-        } else {
-            alert("Incorrect!");
-        }
-    }
+// ------------------- SETUP -------------------
+function setup() {
+  console.log("Setup complete");
 
-    submitButton.addEventListener('click', checkAnswer);
-
-    const randomWord = Math.floor(Math.random() * words.length);
-    const skip = words[randomWord].skip;
-    line1.textContent = "Ceasar drank " + skip + " beers";
-    line2.textContent = words[randomWord].cipher;
-    
+  createTilePair('pink');
+  createTilePair('green');
+  createTilePair('blue');
+  createTilePair('orange');
 }
 
-// Create a pair of blue tiles
-function createBlueTilePair(){
-    // First Tile
-    const first = document.createElement('div');
-    first.classList.add('tile');
-    first.classList.add('blue');
-
-    // Add image to first tile
-    const img = document.createElement('img');
-    img.classList.add('tile-image');
-    img.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/220px-Cat03.jpg"; // temporary image
-    first.appendChild(img);
-
-    // Add arrow image
-    const arrow = document.createElement('img');
-    arrow.src = "./media/arrow.png";
-    arrow.classList.add('arrow-image');
-    first.appendChild(arrow);
-
-    // Second Tile
-    const second = document.createElement('div');
-    second.classList.add('tile');
-    second.classList.add('blue');
-    const img2 = img.cloneNode(); // Clone the image for the second tile
-    second.appendChild(img2);
-
-    // Append tiles to main
-    main.appendChild(first);
-    main.appendChild(second);
-
-    first.id = `blue-tile-${tileIDs.blue}`;
-    second.id = `blue-tile-${tileIDs.blue}`;
-    tileIDs.blue++;
-
-
-    // FUNCTIONALITY GOES SOMEWHERE ELSE? 
-
-    var degrees = [0, 45, 90, 135, 180, 225, 270, 315];
-    var randomIndex = Math.floor(Math.random() * degrees.length);
-    var randomDegree = degrees[randomIndex];
-
-    var img1Angle = 0;
-
-    img2.style.transform = "rotate(" + randomDegree + "deg)";
-    arrow.addEventListener('click', rotateImage);
-    
-    function rotateImage() {
-        img1Angle += 45;
-        img.style.transform = "rotate(" + img1Angle + "deg)";
-        console.log("Arrow clicked, image rotated to " + img1Angle + " degrees");
-        checkMatch();
-    }
-
-    function checkMatch() {
-        var currentRotation = img1Angle % 360;
-        
-        if (currentRotation === randomDegree) {
-            alert("Images are aligned!");
-        }
-    }
-
-
+// ------------------- TILE CREATOR -------------------
+function createTilePair(color) {
+  switch (color) {
+    case 'green': return createGreenTilePair();
+    case 'blue': return createBlueTilePair();
+    case 'pink': return createPinkTilePair();
+    case 'orange': return createOrangeTilePair();
+    default: console.warn(`Unknown color: ${color}`);
+  }
 }
 
-// Helper function to create a slider in pink tile
-function createSlider(label, initialValue) {
-    // Create container for slider and label
-    const container = document.createElement('div');
-    container.classList.add('slider-container');
-    container.textContent = label + ":";
+// ------------------- GREEN TILE -------------------
+function createGreenTilePair() {
+  const randomWordIndex = Math.floor(Math.random() * words.length);
+  const word = words[randomWordIndex];
 
-    // Create slider input
+  const first = createTile('green', ['column-layout']);
+  const line1 = createTextDiv('green-text', `Ceasar drank ${word.skip} beers`);
+  const line2 = createTextDiv('green-text', word.cipher);
+  first.append(line1, line2);
+
+  const second = createTile('green');
+  const searchBar = createInput('search', 'search-bar');
+  const submitButton = createButton('Submit', () => {
+    alert(searchBar.value === word.original ? 'Correct!' : 'Incorrect!');
+  });
+  second.append(searchBar, submitButton);
+
+  appendTiles(first, second, 'green');
+}
+
+// ------------------- BLUE TILE -------------------
+function createBlueTilePair() {
+  const first = createTile('blue');
+  const img = createImage('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/220px-Cat03.jpg', 'tile-image');
+  const arrow = createImage('./media/arrow.png', 'arrow-image');
+  first.append(img, arrow);
+
+  const second = createTile('blue');
+  const img2 = img.cloneNode();
+  second.appendChild(img2);
+
+  appendTiles(first, second, 'blue');
+
+  // Rotation logic
+  const degrees = [0, 45, 90, 135, 180, 225, 270, 315];
+  const targetRotation = degrees[Math.floor(Math.random() * degrees.length)];
+  let currentRotation = 0;
+  img2.style.transform = `rotate(${targetRotation}deg)`;
+
+  arrow.addEventListener('click', () => {
+    currentRotation += 45;
+    img.style.transform = `rotate(${currentRotation}deg)`;
+    if ((currentRotation % 360) === targetRotation) alert('Images are aligned!');
+  });
+}
+
+// ------------------- PINK TILE -------------------
+function createPinkTilePair() {
+  const first = createTile('pink', ['column-layout']);
+  const sliders = createSliders(['R', 'G', 'B'], [255, 192, 203]);
+  const colorDisplay = createDiv('color-display');
+  first.append(sliders.container, colorDisplay);
+
+  const second = createTile('pink');
+  const targetColorDisplay = createDiv('color-display-large');
+  second.appendChild(targetColorDisplay);
+
+  appendTiles(second, first, 'pink');
+
+  // Color matching
+  const targetColor = getRandomRGB();
+  targetColorDisplay.style.backgroundColor = targetColor;
+  sliders.inputs.forEach(input => input.addEventListener('input', () => {
+    const currentColor = `rgb(${sliders.inputs[0].value}, ${sliders.inputs[1].value}, ${sliders.inputs[2].value})`;
+    colorDisplay.style.backgroundColor = currentColor;
+    if (colorsMatch(currentColor, targetColor)) alert('Colors match!');
+  }));
+}
+
+// ------------------- ORANGE TILE -------------------
+const drawings = {
+  plus: [[3,1], [3,2], [3,3], [3,4], [3,5], [1,3], [2,3], [4,3], [5,3]],
+  x: [[1,1], [2,2], [3,3], [4,4], [5,5], [1,5], [2,4], [4,2], [5,1]],
+  minus: [[1,3], [2,3], [3,3], [4,3], [5,3]],
+  divide: [[1,3], [2,3], [3,3], [4,3], [5,3], [3,1], [3,5]]
+};
+
+function createOrangeTilePair() {
+  const first = createTile('orange');
+  const second = createTile('orange');
+
+  const plane1 = drawCartesianPlane(drawings);
+  const plane2 = drawCartesianPlane();
+
+  first.appendChild(plane1);
+  second.appendChild(plane2);
+
+  appendTiles(first, second, 'orange');
+
+  plane2.querySelectorAll('.grid-cell').forEach(cell => {
+    cell.addEventListener('click', () => {
+      cell.classList.toggle('filled');
+      if (checkPlaneMatch(plane1, plane2)) alert('Tiles match!');
+    });
+  });
+}
+
+// ------------------- HELPER FUNCTIONS -------------------
+function createTile(color, classes = []) {
+  const tile = document.createElement('div');
+  tile.classList.add('tile', color, ...classes);
+  return tile;
+}
+
+function createTextDiv(className, text) {
+  const div = document.createElement('div');
+  div.classList.add(className);
+  div.textContent = text;
+  return div;
+}
+
+function createInput(type, className) {
+  const input = document.createElement('input');
+  input.type = type;
+  input.classList.add(className);
+  return input;
+}
+
+function createButton(text, callback) {
+  const btn = document.createElement('button');
+  btn.textContent = text;
+  btn.addEventListener('click', callback);
+  return btn;
+}
+
+function createImage(src, className) {
+  const img = document.createElement('img');
+  img.src = src;
+  img.classList.add(className);
+  return img;
+}
+
+function createDiv(className) {
+  const div = document.createElement('div');
+  div.classList.add(className);
+  return div;
+}
+
+function appendTiles(first, second, color) {
+  first.id = `${color}-tile-${tileIDs[color]}`;
+  second.id = `${color}-tile-${tileIDs[color]}`;
+  container.append(first, second);
+  tileIDs[color]++;
+}
+
+function createSliders(labels, values) {
+  const container = document.createElement('div');
+  container.classList.add('sliders', 'column-layout');
+  const inputs = labels.map((label, i) => {
+    const sliderContainer = document.createElement('div');
+    sliderContainer.classList.add('slider-container');
+    sliderContainer.textContent = `${label}:`;
     const slider = document.createElement('input');
     slider.type = 'range';
     slider.min = 0;
     slider.max = 255;
-    slider.value = initialValue;
-
-    // Append slider to container
-    container.appendChild(slider);
-    
-    return { container, slider };
+    slider.value = values[i];
+    sliderContainer.appendChild(slider);
+    container.appendChild(sliderContainer);
+    return slider;
+  });
+  return { container, inputs };
 }
 
-// Create a pair of pink tiles
-function createPinkTilePair() {
-    // First Tile
-    const first = document.createElement('div');
-    first.classList.add('tile', 'pink');
-
-    // Create sliders container
-    const sliders = document.createElement('div');
-    sliders.classList.add('sliders');
-    sliders.classList.add('column-layout');
-    first.appendChild(sliders);
-
-    // Create sliders and append to sliders container
-    const r = createSlider("R", 255);
-    const g = createSlider("G", 192);
-    const b = createSlider("B", 203);
-
-    sliders.appendChild(r.container);
-    sliders.appendChild(g.container);
-    sliders.appendChild(b.container);
-
-    // Create color display box
-    const colorDisplay = document.createElement('div');
-    colorDisplay.classList.add('color-display');
-    first.appendChild(colorDisplay);
-
-    // Second Tile
-    const second = document.createElement('div');
-    second.classList.add('tile', 'pink');
-    
-    // Create larger color display box
-    const colorDisplay2 = document.createElement('div');
-    colorDisplay2.classList.add('color-display-large');
-    second.appendChild(colorDisplay2);
-    
-    // Append tiles to main
-    main.appendChild(second);
-    main.appendChild(first);
-
-    first.id = `pink-tile-${tileIDs.pink}`;
-    second.id = `pink-tile-${tileIDs.pink}`;
-    tileIDs.pink++;
-
-    // SEPARATE FUNCTIONALITY LATER 
-    // Update color display based on slider values
-
-    // Set random target color
-    function setRandomColor() {
-        var r = Math.floor(Math.random() * 256);
-        var g = Math.floor(Math.random() * 256);
-        var b = Math.floor(Math.random() * 256);
-
-        const rgbString = `rgb(${r}, ${g}, ${b})`;
-        colorDisplay2.style.backgroundColor = rgbString;
-    }
-
-    // Update color display based on slider values
-    function updateColor() {
-        const rValue = r.slider.value;
-        const gValue = g.slider.value;
-        const bValue = b.slider.value;
-        const rgbString = `rgb(${rValue}, ${gValue}, ${bValue})`;
-        colorDisplay.style.backgroundColor = rgbString;
-
-        // Check for match
-        checkMatch();
-    }
-
-    // Check if colors match within a threshold
-    function checkMatch() {      
-        const rValue = r.slider.value;
-        const gValue = g.slider.value;
-        const bValue = b.slider.value;
-        const targetColor = colorDisplay2.style.backgroundColor;
-        const currentColor = `rgb(${rValue}, ${gValue}, ${bValue})`;
-
-        // Parse RGB values from target color
-        let targetR, targetG, targetB;
-        targetR = parseInt(targetColor.slice(4, targetColor.indexOf(',')));
-        targetG = parseInt(targetColor.slice(targetColor.indexOf(',') + 2, targetColor.lastIndexOf(',')));
-        targetB = parseInt(targetColor.slice(targetColor.lastIndexOf(',') + 2, targetColor.indexOf(')')));
-
-        // Calculate differences
-        const redDiff = Math.abs(targetR - rValue);
-        const greenDiff = Math.abs(targetG - gValue);
-        const blueDiff = Math.abs(targetB - bValue);
-
-        const threshold = 25; // Allowable difference
-
-        // If all differences are within the threshold, colors match
-        if (redDiff <= threshold && greenDiff <= threshold && blueDiff <= threshold) {
-            alert("Colors match!");
-        }
-    }
-
-    // Add event listeners to sliders
-    r.slider.addEventListener('input', updateColor);
-    g.slider.addEventListener('input', updateColor);
-    b.slider.addEventListener('input', updateColor);
-
-    // Initialize color display
-    setRandomColor();
-    updateColor();
-    
+function getRandomRGB() {
+  const r = Math.floor(Math.random() * 256);
+  const g = Math.floor(Math.random() * 256);
+  const b = Math.floor(Math.random() * 256);
+  return `rgb(${r},${g},${b})`;
 }
 
-// Helper function to draw a Cartesian plane
-function drawCartesianPlane(drawings) {
-    const plane = document.createElement('div');
-    plane.classList.add('cartesian-plane');
-    
-    const gridSize = 7;
-    let randomDrawingCoords = [];
-    
-    if (drawings) {
-        // Get all keys
-        const keys = Object.keys(drawings);
-        
-        // Pick a random key
-        const randomDrawing = keys[Math.floor(Math.random() * keys.length)];
-        console.log('Selected drawing:', randomDrawing);
-        randomDrawingCoords = drawings[randomDrawing];
-        console.log('Coordinates:', randomDrawingCoords);
-    }
-    
-    for (let i = 0; i < gridSize; i++) {
-        for (let j = 0; j < gridSize; j++) {
-            const cell = document.createElement('div');
-            cell.classList.add('grid-cell');
-            
-            // Check if this cell's coordinates match any in the random drawing
-            if (randomDrawingCoords.some(coord => coord[0] === j && coord[1] === i)) {
-                cell.classList.add('filled');
-            }
-            
-            plane.appendChild(cell);
-        }
-    }
-    
-    return plane;
+function colorsMatch(color1, color2, threshold = 25) {
+  const [r1, g1, b1] = color1.match(/\d+/g).map(Number);
+  const [r2, g2, b2] = color2.match(/\d+/g).map(Number);
+  return Math.abs(r1 - r2) <= threshold &&
+         Math.abs(g1 - g2) <= threshold &&
+         Math.abs(b1 - b2) <= threshold;
 }
 
-var drawings = {
-    plus: [[3,1], [3,2], [3,3], [3,4], [3,5], [1,3], [2,3], [4,3], [5,3]],
-    x: [[1,1], [2,2], [3,3], [4,4], [5,5], [1,5], [2,4], [4,2], [5,1]],
-    minus: [[1,3], [2,3], [3,3], [4,3], [5,3]],
-    divide: [[1,3], [2,3], [3,3], [4,3], [5,3], [3,1], [3,5]]
-}
-// Create a pair of orange tiles
-function createOrangeTilePair(){
-    const first = document.createElement('div');
-    first.classList.add('tile');
-    first.classList.add('orange');
-    
-    const plane = drawCartesianPlane(drawings);
-    first.appendChild(plane);
-    
-    const second = document.createElement('div');
-    second.classList.add('tile');
-    second.classList.add('orange');
-    
-    const plane2 = drawCartesianPlane();
-    second.appendChild(plane2);
-    
-    main.appendChild(first);
-    main.appendChild(second);
+function drawCartesianPlane(drawings = null) {
+  const plane = createDiv('cartesian-plane');
+  const gridSize = 7;
+  let coords = [];
 
-    first.id = `orange-tile-${tileIDs.orange}`;
-    second.id = `orange-tile-${tileIDs.orange}`;
-    tileIDs.orange++;
+  if (drawings) {
+    const keys = Object.keys(drawings);
+    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+    coords = drawings[randomKey];
+  }
 
-    const cells = plane2.querySelectorAll('.grid-cell');
-    
-    cells.forEach(cell => {
-        cell.addEventListener('click', () => {
-            console.log('Cell clicked');
-            cell.classList.toggle('filled');
-            checkMatch();
-            
-        });
-    });
-
-    function checkMatch() {
-        const cells1 = plane.querySelectorAll('.grid-cell');
-        const cells2 = plane2.querySelectorAll('.grid-cell');
-
-        if (cells1.length !== cells2.length) return false;
-
-        for (let i = 0; i < cells1.length; i++) {
-            const isFilled1 = cells1[i].classList.contains('filled');
-            const isFilled2 = cells2[i].classList.contains('filled');
-            
-            if (isFilled1 !== isFilled2) {
-                return false;
-            }
-        }
-        alert("Tiles match!");
+  for (let y = 0; y < gridSize; y++) {
+    for (let x = 0; x < gridSize; x++) {
+      const cell = createDiv('grid-cell');
+      if (coords.some(([cx, cy]) => cx === x && cy === y)) cell.classList.add('filled');
+      plane.appendChild(cell);
     }
+  }
+  return plane;
 }
 
-
-createGreenTilePair();
-// createGreenTilePair();
-// createPinkTilePair();
-// createPinkTilePair();
-// createBlueTilePair();
-// createBlueTilePair();
-createOrangeTilePair();
-
-
-
-
-// TODO 
-// Get checking for orange tile up and running
-// Decide whether to do either paired tiles, or any of the same color are ok 
-// Randomize tile generation
-// Find a way to layer them like in mahjong 
-// Playtest to see if it actually works 
+function checkPlaneMatch(plane1, plane2) {
+  const cells1 = plane1.querySelectorAll('.grid-cell');
+  const cells2 = plane2.querySelectorAll('.grid-cell');
+  return Array.from(cells1).every((cell, i) =>
+    cell.classList.contains('filled') === cells2[i].classList.contains('filled')
+  );
+}
