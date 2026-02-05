@@ -23,19 +23,16 @@ const words = [
   { original: "Candle", cipher: "Dboemf", skip: 1 },
   { original: "Bridge", cipher: "Csjehf", skip: 1 },
   { original: "Pillow", cipher: "Qjmmpx", skip: 1 },
-  // … truncated for brevity (keep the full words array in your project)
 ];
 
 const main = document.querySelector('main');
 
-const container = document.createElement('div');
+const container = pickRandomBackgroundImage();
 container.classList.add('container');
 main.appendChild(container);
 
 // ------------------- SETUP -------------------
 function setup() {
-  console.log("Setup complete");
-
   createTilePair('pink');
   createTilePair('green');
   createTilePair('blue');
@@ -66,7 +63,7 @@ function createGreenTilePair() {
   const second = createTile('green');
   const searchBar = createInput('search', 'search-bar');
   const submitButton = createButton('Submit', () => {
-    alert(searchBar.value === word.original ? 'Correct!' : 'Incorrect!');
+    if (searchBar.value === word.original) removeMatchedTiles(first, second);
   });
   second.append(searchBar, submitButton);
 
@@ -95,7 +92,7 @@ function createBlueTilePair() {
   arrow.addEventListener('click', () => {
     currentRotation += 45;
     img.style.transform = `rotate(${currentRotation}deg)`;
-    if ((currentRotation % 360) === targetRotation) alert('Images are aligned!');
+    if ((currentRotation % 360) === targetRotation) removeMatchedTiles(first, second);
   });
 }
 
@@ -118,7 +115,7 @@ function createPinkTilePair() {
   sliders.inputs.forEach(input => input.addEventListener('input', () => {
     const currentColor = `rgb(${sliders.inputs[0].value}, ${sliders.inputs[1].value}, ${sliders.inputs[2].value})`;
     colorDisplay.style.backgroundColor = currentColor;
-    if (colorsMatch(currentColor, targetColor)) alert('Colors match!');
+    if (colorsMatch(currentColor, targetColor)) removeMatchedTiles(first, second);;
   }));
 }
 
@@ -145,7 +142,7 @@ function createOrangeTilePair() {
   plane2.querySelectorAll('.grid-cell').forEach(cell => {
     cell.addEventListener('click', () => {
       cell.classList.toggle('filled');
-      if (checkPlaneMatch(plane1, plane2)) alert('Tiles match!');
+      if (checkPlaneMatch(plane1, plane2)) removeMatchedTiles(first, second);;
     });
   });
 }
@@ -260,3 +257,39 @@ function checkPlaneMatch(plane1, plane2) {
     cell.classList.contains('filled') === cells2[i].classList.contains('filled')
   );
 }
+
+function pickRandomBackgroundImage(){
+    const containerDiv = document.createElement('div');
+
+    var path = "./media/random";
+    var numImages = 10;
+
+    var imgs = []
+    for(var i = 0; i < numImages; i++){
+        imgs[i] = document.createElement('img');
+        imgs[i].src = path + i + ".jpg";
+    }
+    var randomIndex = Math.floor(Math.random() * 10);
+    console.log(randomIndex);
+    var random = imgs[randomIndex];
+
+    containerDiv.style.backgroundImage = `url(${path}${randomIndex}.jpg)`;
+    return containerDiv;
+}
+
+function removeMatchedTiles(tile1, tile2) {
+    if (!tile1 || !tile2) return; // safety check
+
+    // Smooth fade-out
+    tile1.style.transition = 'opacity 0.5s';
+    tile2.style.transition = 'opacity 0.5s';
+    tile1.style.opacity = 0;
+    tile2.style.opacity = 0;
+
+    // Remove after transition
+    setTimeout(() => {
+        tile1.remove();
+        tile2.remove();
+    }, 500);
+}
+
