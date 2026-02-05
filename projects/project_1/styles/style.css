@@ -8,26 +8,35 @@ body{
     font-family: 'Roboto', sans-serif;
 }
 
-main{
-    background-color:grey;
+main {
+    background-color: grey;
     padding: 0;
     width: 100%;
+    height: 100vh; 
     display: flex;
     justify-content: center; 
     align-items: center;     
-    height: 100vh; 
+    
+    background-image: url('../media/duck-wallpaper.jpg');
+    background-size: 300px 300px; /* size of each duck tile */
+    background-repeat: repeat;    /* repeat to fill the area */
+    background-position: top left; /* starting position */
+    background-attachment: scroll; /* optional: moves with scroll */
 }
 
 .container {
     width: 1700px;
     height: 500px;
-    background-color: brown;
+    border-radius: 8px;
+    background-color: rgb(155, 87, 169);
     text-align: center;
     display: flex;
     flex-wrap: wrap;
     flex-direction: column;
     justify-content: center; 
-    align-items: center;     
+    align-items: center;    
+    position: relative;
+    overflow: hidden 
 }
 
 
@@ -141,4 +150,21 @@ button{
     border: black 1px solid;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  clip-path: circle(0% at 50% 50%);
+  transition: clip-path 1s ease-out;
+  z-index: 1;
+}
+
+.image-overlay.reveal {
+  clip-path: circle(150% at 50% 50%);
 }

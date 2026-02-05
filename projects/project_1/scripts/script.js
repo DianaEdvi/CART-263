@@ -27,7 +27,8 @@ const words = [
 
 const main = document.querySelector('main');
 
-const container = pickRandomBackgroundImage();
+// const container = pickRandomBackgroundImage();
+let container = document.createElement('div');
 container.classList.add('container');
 main.appendChild(container);
 
@@ -259,7 +260,7 @@ function checkPlaneMatch(plane1, plane2) {
 }
 
 function pickRandomBackgroundImage(){
-    const containerDiv = document.createElement('div');
+    // const containerDiv = document.createElement('div');
 
     var path = "./media/random";
     var numImages = 10;
@@ -272,24 +273,39 @@ function pickRandomBackgroundImage(){
     var randomIndex = Math.floor(Math.random() * 10);
     console.log(randomIndex);
     var random = imgs[randomIndex];
-
-    containerDiv.style.backgroundImage = `url(${path}${randomIndex}.jpg)`;
-    return containerDiv;
+    return path + randomIndex + ".jpg";
 }
 
 function removeMatchedTiles(tile1, tile2) {
-    if (!tile1 || !tile2) return; // safety check
+    if (!tile1 || !tile2) return;
 
-    // Smooth fade-out
     tile1.style.transition = 'opacity 0.5s';
     tile2.style.transition = 'opacity 0.5s';
     tile1.style.opacity = 0;
     tile2.style.opacity = 0;
 
-    // Remove after transition
     setTimeout(() => {
         tile1.remove();
         tile2.remove();
+
+        const remainingTiles = container.querySelectorAll('.tile');
+        if (remainingTiles.length === 0) {
+            const imgPath = pickRandomBackgroundImage();
+
+            const overlay = document.createElement('div');
+            overlay.classList.add('image-overlay');
+            overlay.style.backgroundImage = `url(${imgPath})`;
+            container.appendChild(overlay);
+
+            // trigger animation by adding the class
+            requestAnimationFrame(() => {
+                overlay.classList.add('reveal');
+            });
+
+            overlay.addEventListener('transitionend', () => {
+                container.style.backgroundImage = `url(${imgPath})`;
+                overlay.remove();
+            });
+        }
     }, 500);
 }
-
