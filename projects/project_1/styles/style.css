@@ -18,10 +18,20 @@ main {
     align-items: center;     
     
     background-image: url('../media/duck-wallpaper.jpg');
-    background-size: 300px 300px; /* size of each duck tile */
-    background-repeat: repeat;    /* repeat to fill the area */
-    background-position: top left; /* starting position */
-    background-attachment: scroll; /* optional: moves with scroll */
+    background-size: 300px 300px; 
+    background-repeat: repeat;    
+    background-position: top left; 
+    background-attachment: scroll; 
+    animation: moveDiagonal 30s linear infinite;
+}
+
+@keyframes moveDiagonal {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 500px 500px; /* move right and down */
+  }
 }
 
 .container {
