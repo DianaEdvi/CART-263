@@ -106,7 +106,7 @@ function createGreenTilePair() {
     const first = createTile('green');
     first.classList.add('column-layout');
     const line0 = createTextDiv('green-text', `Decode the message...`);
-    const line1 = createTextDiv('green-text', `Hint: Ceasar drank ${word.skip} beers`);
+    const line1 = createTextDiv('green-text', `Hint: Slide ${word.skip} steps to the right`);
     line1.style.fontSize = '0.5em'; 
     const line2 = createTextDiv('green-text', word.cipher);
     first.append(line0, line2, line1);
