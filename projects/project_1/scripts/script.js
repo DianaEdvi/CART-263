@@ -129,7 +129,7 @@ function createGreenTilePair() {
 function createBlueTilePair() {
     // Create first tile 
     const first = createTile('blue');
-    const img = createImage('https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Cat03.jpg/220px-Cat03.jpg', 'tile-image');
+    const img = createImage('https://picsum.photos/500', 'tile-image');
     const arrow = createImage('./media/arrow.png', 'arrow-image');
     first.append(img, arrow);
 
