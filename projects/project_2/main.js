@@ -45,7 +45,10 @@ geometry.computeVertexNormals();
 const material = new THREE.MeshStandardMaterial({
     vertexColors: true,
     flatShading: true,
-    side: THREE.DoubleSide
+    side: THREE.DoubleSide,
+    // remove specular
+    roughness: 1.0,
+    metalness: 0.0
 });
 
 let mesh = new THREE.Mesh(geometry, material);

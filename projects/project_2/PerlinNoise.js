@@ -5,6 +5,7 @@ export class PerlinNoise {
         this.populateGradients();
     }
 
+    // Take an integral coordinate and return a pseudo-random gradient vector from the pre-populated terrain
     pseudoRandomGradient(ix, iy) {
         let ixm = ((ix % this.n) + this.n) % this.n;
         let iym = ((iy % this.n) + this.n) % this.n;
@@ -17,8 +18,8 @@ export class PerlinNoise {
         let y0 = Math.floor(y);
         let y1i = y0 + 1;
 
-        let posX = x - x0; 
-        let posY = y - y0; 
+        let posX = x - x0; // Relative x coordinate in the unit square
+        let posY = y - y0; // Relative y coordinate in the unit square
 
         let g00 = this.pseudoRandomGradient(x0, y0);
         let g10 = this.pseudoRandomGradient(x1i, y0);
@@ -44,6 +45,7 @@ export class PerlinNoise {
         return ix1 + v * (ix2 - ix1);
     }
 
+    // Pre-populate the gradient vectors for the terrain points
     populateGradients() {
         for (let i = 0; i < this.n; i++) {
             for (let j = 0; j < this.n; j++) {
@@ -53,6 +55,7 @@ export class PerlinNoise {
         }
     }
 
+    // Fade function as defined by Ken Perlin.
     fade(t) {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
