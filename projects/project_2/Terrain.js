@@ -1,5 +1,3 @@
-// Define a new Row-Major dynamic matrix type (Cache locality optimization for sparse solvers)
-
 export const Biome = {
     PLAINS: 0,
     MOUNTAINS: 1,
@@ -19,11 +17,11 @@ export class Terrain {
         this.n = 150;
         this.width = 1;
         this.currentBiome = Biome.PLAINS;
-        // For sinking the terrain for islands 
         this.globalOffset = 0.0; 
         
         this.V = new Float32Array((this.n + 1) * (this.n + 1) * 3);
         this.F = new Uint32Array(this.n * this.n * 2 * 3);
+        this.C = new Float32Array((this.n + 1) * (this.n + 1) * 3);
 
         for (let i = 0; i < this.n + 1; i++){
             for (let j = 0; j < this.n + 1; j++){
@@ -59,19 +57,13 @@ export class Terrain {
             }
         }
 
-        // Terrain generation parameters
-        this.levels = [
-        // new Level(0.5, 2.0),
-        // new Level(0.05, 10.0),
-        // new Level(0.02, 40.0)
-        ];
+        this.levels = [];
     }
 
     // Generate terrain using multi-level Perlin noise
     generateTerrain(noiseLevels) {
         let rows = (this.n + 1) * (this.n + 1);
         for (let i = 0; i < rows; i++) {
-            // Reset height
             this.V[i * 3 + 1] = 0.0; 
             
             for (let level = 0; level < noiseLevels.length; level++) {
@@ -80,9 +72,7 @@ export class Terrain {
                 let noiseVal = noiseLevels[level].noise(x, z);
 
                 if (this.currentBiome === Biome.VALLEYS) { 
-                    // abs creates sharp peaks and subtracting from 1 inverts them
                     noiseVal = 1.0 - Math.abs(noiseVal); 
-                    // make ridges sharper and valleys wider 
                     noiseVal *= noiseVal; 
                 }
 
@@ -90,12 +80,18 @@ export class Terrain {
             }
 
             this.V[i * 3 + 1] += this.globalOffset;
+
+            let color = this.getTerrainColor(this.currentBiome, this.V[i * 3 + 1]);
+            this.C[i * 3 + 0] = color.r;
+            this.C[i * 3 + 1] = color.g;
+            this.C[i * 3 + 2] = color.b;
         }
     }
 
     setBiome(biome) {
         this.currentBiome = biome;
         this.levels = [];
+        this.globalOffset = 0.0;
 
         let numOctaves = 5;
         let frequency = 0.01;
@@ -129,10 +125,20 @@ export class Terrain {
             amplitude *= persistence;
         }
     }
+
+    getTerrainColor(biome, altitude) {
+        if (altitude < 20.0) {
+            return { r: 0.20, g: 0.55, b: 0.20 }; 
+        } else if (altitude < 50.0) {
+            return { r: 0.45, g: 0.25, b: 0.10 }; 
+        } else {
+            return { r: 0.75, g: 0.75, b: 0.75 }; 
+        }
+    }
 }
 
+// ++ operator overload 
 export function advanceBiome(b) {
-    // Wrap around
-    if (b === Biome.ISLANDS) return Biome.PLAINS;
+    if (b === Biome.ISLANDS) return Biome.PLAINS; 
     return b + 1;
 }

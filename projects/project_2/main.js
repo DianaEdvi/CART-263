@@ -38,11 +38,12 @@ terrain.generateTerrain(noiseLevels);
 
 let geometry = new THREE.BufferGeometry();
 geometry.setAttribute('position', new THREE.BufferAttribute(terrain.V, 3));
+geometry.setAttribute('color', new THREE.BufferAttribute(terrain.C, 3));
 geometry.setIndex(new THREE.BufferAttribute(terrain.F, 1));
 geometry.computeVertexNormals();
 
 const material = new THREE.MeshStandardMaterial({
-    color: 0x44aa88,
+    vertexColors: true,
     flatShading: true,
     side: THREE.DoubleSide
 });
@@ -60,9 +61,11 @@ window.addEventListener('keydown', (event) => {
         for (let i = 0; i < terrain.levels.length; i++) {
             newNoiseLevels.push(new PerlinNoise(terrain.n));
         }
+        
         terrain.generateTerrain(newNoiseLevels);
         
         geometry.attributes.position.needsUpdate = true;
+        geometry.attributes.color.needsUpdate = true;
         geometry.computeVertexNormals();
     }
 });
