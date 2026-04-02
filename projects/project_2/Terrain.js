@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+
 // Define a new Row-Major dynamic matrix type (Cache locality optimization for sparse solvers)
 
 export class Level {
@@ -13,6 +14,7 @@ export const Biome = {
 };
 
 // ++ operator overload 
+// Wrap around
 
 export class Terrain {
     constructor() {
@@ -20,58 +22,110 @@ export class Terrain {
         this.width = 1;
         this.NUM_OCTAVES = 5;
         this.currentBiome = Biome.PLAINS;
-        // For sinking the terrain for islands 
-        this.globalOffset = 0.0; 
+        this.globalOffset = 0.0; // For sinking the terrain for islands 
         this.levels = [];
 
-        // Triangle 1 
-        // Triangle 2 
-        this.geometry = new THREE.PlaneGeometry(this.n * this.width, this.n * this.width, this.n, this.n);
-        this.geometry.rotateX(-Math.PI / 2);
-        this.geometry.translate((this.n * this.width) / 2, 0, (this.n * this.width) / 2);
+        this.geometry = new THREE.BufferGeometry();
+        
+        const vertexCount = (this.n + 1) * (this.n + 1);
+        const vertices = new Float32Array(vertexCount * 3);
+        const indices = [];
+
+        for (let i = 0; i < this.n + 1; i++) {
+            for (let j = 0; j < this.n + 1; j++) {
+                let idx = (i * (this.n + 1) + j) * 3;
+                vertices[idx] = i * this.width;
+                vertices[idx + 1] = 0.0;
+                vertices[idx + 2] = j * this.width;
+            }
+        }
+
+        for (let i = 0; i < this.n; i++) {
+            for (let j = 0; j < this.n; j++) {
+                // Triangle 1 
+                let p1 = i * (this.n + 1) + j;
+                let p2 = i * (this.n + 1) + j + 1;
+                let p3 = i * (this.n + 1) + j + this.n + 1;
+                indices.push(p1, p2, p3);
+
+                // Triangle 2 
+                let q1 = i * (this.n + 1) + j + this.n + 1;
+                let q2 = i * (this.n + 1) + j + 1;
+                let q3 = i * (this.n + 1) + j + this.n + 2;
+                indices.push(q1, q2, q3);
+            }
+        }
+
+        this.geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+        this.geometry.setIndex(indices);
+        
+        this.colors = new Float32Array(vertexCount * 3);
     }
 
+    // Generates terrain of 16 biomes (from 4 types)
     generateTerrain(noiseLevels) {
         let maxCoord = this.n * this.width;
 
-        let quadrantBiomes = [Biome.PLAINS, Biome.MOUNTAINS, Biome.VALLEYS, Biome.ISLANDS];
+        // 4 of each biome type
+        let gridBiomes = [
+            Biome.PLAINS, Biome.PLAINS, Biome.PLAINS, Biome.PLAINS,
+            Biome.MOUNTAINS, Biome.MOUNTAINS, Biome.MOUNTAINS, Biome.MOUNTAINS,
+            Biome.VALLEYS, Biome.VALLEYS, Biome.VALLEYS, Biome.VALLEYS,
+            Biome.ISLANDS, Biome.ISLANDS, Biome.ISLANDS, Biome.ISLANDS
+        ];
 
-        // Shuffle the list randomly every time spacebar is pressed
-        quadrantBiomes.sort(() => Math.random() - 0.5);
+        // Shuffle biomes
+        gridBiomes.sort(() => Math.random() - 0.5);
         
-        const positions = this.geometry.attributes.position;
-        const colors = [];
+        const positions = this.geometry.attributes.position.array;
+        const vertexCount = (this.n + 1) * (this.n + 1);
 
-        for (let i = 0; i < positions.count; i++) {
-            let x = positions.getX(i);
-            let z = positions.getZ(i);
+        // Multithreading madness (generate vertex height and color)
+        for (let i = 0; i < vertexCount; i++) {
+            let x = positions[i * 3];
+            let z = positions[i * 3 + 2];
 
-            // Calculate normalized coordinates (0.0 to 1.0)
+            // Normalize from [0, 1]
             let normalized_x = x / maxCoord;
             let normalized_z = z / maxCoord;
 
+            // Scale up to our 4x4 grid coordinates [0, 3] (there are 3 gaps between 4 biomes)
+            let actual_x = normalized_x * 3.0;
+            let actual_z = normalized_z * 3.0;
+
+            // Determine which of the 3 transition cells we are inside
+            let index_x = Math.min(Math.floor(actual_x), 2);
+            let index_z = Math.min(Math.floor(actual_z), 2);
+
+            // Get the fractional part for smooth blending inside this specific cell [0, 1]
+            let remainder_x = actual_x - index_x;
+            let remainder_z = actual_z - index_z;
+
             // Smoothstep: 3t^2 - 2t^3
             // Blends nicely between biomes
-            let smooth_x = 3 * Math.pow(normalized_x, 2.0) - 2 * Math.pow(normalized_x, 3.0);
-            let smooth_z = 3 * Math.pow(normalized_z, 2.0) - 2 * Math.pow(normalized_z, 3.0);
+            let smooth_x = 3 * Math.pow(remainder_x, 2.0) - 2 * Math.pow(remainder_x, 3.0);
+            let smooth_z = 3 * Math.pow(remainder_z, 2.0) - 2 * Math.pow(remainder_z, 3.0);
 
-            // Assign quadrant weights based on Cartesean quadrants
-            let w_Q1 = smooth_x * smooth_z;               
-            let w_Q2 = (1.0 - smooth_x) * smooth_z;       
-            let w_Q3 = (1.0 - smooth_x) * (1.0 - smooth_z); 
-            let w_Q4 = smooth_x * (1.0 - smooth_z);       
+            // Calculate the blending weights for the 4 corners of our current cell
+            let w00 = (1.0 - smooth_x) * (1.0 - smooth_z); // Top-Left
+            let w10 = smooth_x * (1.0 - smooth_z);         // Top-Right
+            let w01 = (1.0 - smooth_x) * smooth_z;         // Bottom-Left
+            let w11 = smooth_x * smooth_z;                 // Bottom-Right
 
-            // Calculate the height of all 4 biomes at this exact (X,Z) location
-            let h_Q1 = this.calculateBiomeHeight(quadrantBiomes[0], x, z, noiseLevels);
-            let h_Q2 = this.calculateBiomeHeight(quadrantBiomes[1], x, z, noiseLevels);
-            let h_Q3 = this.calculateBiomeHeight(quadrantBiomes[2], x, z, noiseLevels);
-            let h_Q4 = this.calculateBiomeHeight(quadrantBiomes[3], x, z, noiseLevels);
+            // Grab the 4 specific biomes from vector
+            let b00 = gridBiomes[index_x + (index_z * 4)];
+            let b10 = gridBiomes[(index_x + 1) + (index_z * 4)];
+            let b01 = gridBiomes[index_x + ((index_z + 1) * 4)];
+            let b11 = gridBiomes[(index_x + 1) + ((index_z + 1) * 4)];
 
-            // Blend the heights together using the spatial weights
-            let finalHeight = (h_Q1 * w_Q1) + 
-                              (h_Q2 * w_Q2) + 
-                              (h_Q3 * w_Q3) + 
-                              (h_Q4 * w_Q4);
+            // Calculate heights for the 4 biomes
+            let h00 = this.calculateBiomeHeight(b00, x, z, noiseLevels);
+            let h10 = this.calculateBiomeHeight(b10, x, z, noiseLevels);
+            let h01 = this.calculateBiomeHeight(b01, x, z, noiseLevels);
+            let h11 = this.calculateBiomeHeight(b11, x, z, noiseLevels);
+
+            // Blend the heights together
+            let finalHeight = (h00 * w00) + (h10 * w10) + (h01 * w01) + (h11 * w11);
 
             let originalAltitude = finalHeight;
 
@@ -80,19 +134,21 @@ export class Terrain {
                 finalHeight = 0.0;
             }
 
-            positions.setY(i, finalHeight);
+            positions[i * 3 + 1] = finalHeight;
             
             // Apply Color
-            let col = this.getTerrainColor(this.currentBiome, originalAltitude);
-            colors.push(col.r, col.g, col.b);
+            let col = this.getTerrainColor(originalAltitude);
+            this.colors[i * 3] = col.r;
+            this.colors[i * 3 + 1] = col.g;
+            this.colors[i * 3 + 2] = col.b;
         }
 
-        this.geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-        positions.needsUpdate = true;
+        this.geometry.setAttribute('color', new THREE.BufferAttribute(this.colors, 3));
+        this.geometry.attributes.position.needsUpdate = true;
         this.geometry.computeVertexNormals();
     }
 
-    getTerrainColor(biome, altitude) {
+    getTerrainColor(altitude) {
         let water = new THREE.Color(0.10, 0.30, 0.80);
         let sand = new THREE.Color(0.76, 0.70, 0.50); 
         let grass = new THREE.Color(0.20, 0.55, 0.20);
@@ -108,7 +164,7 @@ export class Terrain {
         } 
         // Blend Sand into Grass (Altitude 0 to 5)
         else if (altitude < 5.0) {
-            let t = altitude / 5.0; 
+            let t = altitude / 5.0; // t goes from 0.0 to 1.0
             return outColor.lerpColors(sand, grass, t);
         } 
         // Blend Grass into Rock (Altitude 5 to 50)

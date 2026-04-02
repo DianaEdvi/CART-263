@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Terrain } from './Terrain.js';
-import { PerlinNoise } from './perlinNoise.js';
+import { PerlinNoise } from './PerlinNoise.js';
 
 let terrain = new Terrain();
 let currentMesh = null;
@@ -15,52 +15,53 @@ function generateNewMap(){
     terrain.generateTerrain(noiseLevels);
 }
 
-// Helper to apply the mesh to the viewer and set rendering rules
-function updateViewer(scene) {
-    // Clear old data if regenerating
-    if (currentMesh !== null) {
-        scene.remove(currentMesh);
-    }
-    
-    // Set geometry and colors
-    let material = new THREE.MeshBasicMaterial({ 
-        vertexColors: true 
-    });
-    
-    currentMesh = new THREE.Mesh(terrain.geometry, material);
-    scene.add(currentMesh);
-    
-    // Viewer settings
-    // viewer.data().show_lines = false;
-    // viewer.data().V_material_specular.setZero(); 
-    // viewer.data().V_material_specular.col(3).setOnes();
-}
-
-// Setup Three.js environment (replacing igl::opengl::glfw::Viewer)
+// Setup Three.js environment
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x222222);
 
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(terrain.n / 2, 100, terrain.n + 50);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
+camera.position.set(terrain.n * terrain.width / 2, 200, terrain.n * terrain.width + 100);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(terrain.n / 2, 0, terrain.n / 2);
+controls.target.set(terrain.n * terrain.width / 2, 0, terrain.n * terrain.width / 2);
 
-// Seed the random number generator
+// Add lighting since Three.js requires it for flat shading to show depth
+const light = new THREE.DirectionalLight(0xffffff, 1.0);
+light.position.set(100, 200, 50);
+scene.add(light);
+scene.add(new THREE.AmbientLight(0x404040));
+
+// Helper to apply the mesh to the viewer and set rendering rules
+function updateViewer() {
+    // Clear old data if regenerating
+    if (currentMesh !== null) {
+        scene.remove(currentMesh);
+    }
+    
+    // Set geometry and colors
+    let material = new THREE.MeshStandardMaterial({ 
+        vertexColors: true,
+        roughness: 0.8,
+        flatShading: true
+    });
+    
+    currentMesh = new THREE.Mesh(terrain.geometry, material);
+    scene.add(currentMesh);
+}
 
 // Generate and plot the initial terrain
 generateNewMap();
-updateViewer(scene);
+updateViewer();
 
 // Generate new terrain whenever spacebar is pressed
 window.addEventListener('keydown', (e) => {
     if (e.key === ' ' || e.keyCode === 32) {
         generateNewMap();
-        updateViewer(scene);
+        updateViewer();
     }
 });
 
