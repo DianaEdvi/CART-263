@@ -53,7 +53,6 @@ const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
 dirLight.position.copy(sun).multiplyScalar(100); // Put the light where the sun is
 scene.add(dirLight);
 
-
 // Terrain Mesh Setup
 const geometry = new THREE.PlaneGeometry(maxCoord, maxCoord, terrainGridSize, terrainGridSize);
 geometry.rotateX(-Math.PI / 2);
@@ -67,6 +66,24 @@ const material = new THREE.MeshStandardMaterial({
 
 const terrainMesh = new THREE.Mesh(geometry, material);
 scene.add(terrainMesh);
+
+// Water Mesh Setup
+const waterGeometry = new THREE.PlaneGeometry(maxCoord, maxCoord);
+waterGeometry.rotateX(-Math.PI / 2);
+waterGeometry.translate(maxCoord / 2, 0, maxCoord / 2); // Center the water plane over the terrain
+
+const waterMaterial = new THREE.MeshStandardMaterial({
+    color: 0x194ccc, // Ocean blue
+    transparent: true,
+    opacity: 0.7,      
+    roughness: 0.1,    
+    metalness: 0.1,
+    depthWrite: false  // Fixes z-fighting with transparency
+});
+
+const waterMesh = new THREE.Mesh(waterGeometry, waterMaterial);
+scene.add(waterMesh);
+
 
 // Generate a new map
 function generateNewMap() {

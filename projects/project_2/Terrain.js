@@ -146,9 +146,6 @@ export function generateTerrain(noiseLevels, geometry, maxCoord) {
         let finalHeight = (h00 * w00) + (h10 * w10) + (h01 * w01) + (h11 * w11);
         let originalAltitude = finalHeight;
 
-        // Clamp to sea level
-        if (finalHeight < 0.0) finalHeight = 0.0;
-
         // Update the vertex height in the geometry
         positions.setY(i, finalHeight);
 
