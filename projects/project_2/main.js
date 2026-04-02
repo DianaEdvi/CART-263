@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Sky } from 'three/addons/objects/Sky.js'; 
 import { PerlinNoise } from './perlinNoise.js';
 import {NUM_OCTAVES, generateTerrain } from './terrain.js';
+import { CloudLayer } from './clouds.js'; 
 
 const terrainGridSize = 1000; 
 const maxCoord = terrainGridSize;
@@ -61,7 +62,7 @@ geometry.translate(maxCoord / 2, 0, maxCoord / 2);
 const material = new THREE.MeshStandardMaterial({
     vertexColors: true,
     roughness: 0.8,
-    flatShading: true
+    flatShading: true,
 });
 
 const terrainMesh = new THREE.Mesh(geometry, material);
@@ -88,6 +89,10 @@ function generateNewMap() {
 // Initialize
 generateNewMap();
 
+// Create and add the cloud layer
+const clouds = new CloudLayer(8000, 400, maxCoord);
+scene.add(clouds.mesh);
+
 // Event Listeners
 window.addEventListener('keydown', (e) => {
     if (e.code === 'Space') {
@@ -104,6 +109,9 @@ window.addEventListener('resize', () => {
 // Render Loop
 function animate() {
     requestAnimationFrame(animate);
+    
+    // Animate the clouds
+    clouds.update(0.0005, 0.0002);
     
     controls.update();
     renderer.render(scene, camera);
