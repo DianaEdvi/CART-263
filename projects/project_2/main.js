@@ -1,80 +1,111 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { Terrain } from './Terrain.js';
-import { PerlinNoise } from './PerlinNoise.js';
+import { Sky } from 'three/addons/objects/Sky.js'; 
+import { PerlinNoise } from './perlinNoise.js';
+import {NUM_OCTAVES, generateTerrain } from './terrain.js';
 
-let terrain = new Terrain();
-let currentMesh = null;
+const terrainGridSize = 1000; 
+const maxCoord = terrainGridSize;
 
-// Helper to generate fresh noise and terrain
-function generateNewMap(){
-    let noiseLevels = [];
-    for (let i = 0; i < terrain.NUM_OCTAVES; i++) {
-        noiseLevels.push(new PerlinNoise(terrain.n));
-    }
-    terrain.generateTerrain(noiseLevels);
-}
-
-// Setup Three.js environment
+// Scene Setup
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x222222);
+scene.fog = new THREE.Fog(0x87CEEB, 500, 2500);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000); // Increased far clipping plane for the skybox
+camera.position.set(maxCoord / 2, 150, maxCoord + 100);
 
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
-camera.position.set(terrain.n * terrain.width / 2, 200, terrain.n * terrain.width + 100);
-
+// Renderer Setup
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
+// Move the center of the orbit controls to the middle of the terrain
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(terrain.n * terrain.width / 2, 0, terrain.n * terrain.width / 2);
+controls.target.set(maxCoord / 2, 0, maxCoord / 2);
+controls.update();
 
-// Add lighting since Three.js requires it for flat shading to show depth
-const light = new THREE.DirectionalLight(0xffffff, 1.0);
-light.position.set(100, 200, 50);
-scene.add(light);
-scene.add(new THREE.AmbientLight(0x404040));
+// Skybox Setup
+const sky = new Sky();
+sky.scale.setScalar(450000); 
+scene.add(sky);
 
-// Helper to apply the mesh to the viewer and set rendering rules
-function updateViewer() {
-    // Clear old data if regenerating
-    if (currentMesh !== null) {
-        scene.remove(currentMesh);
-    }
-    
-    // Set geometry and colors
-    let material = new THREE.MeshStandardMaterial({ 
-        vertexColors: true,
-        roughness: 0.8,
-        flatShading: true
-    });
-    
-    currentMesh = new THREE.Mesh(terrain.geometry, material);
-    scene.add(currentMesh);
-}
+const sun = new THREE.Vector3();
 
-// Generate and plot the initial terrain
-generateNewMap();
-updateViewer();
+// Configure the sky values
+const skyUniforms = sky.material.uniforms;
+skyUniforms['turbidity'].value = 2;  
+skyUniforms['rayleigh'].value = 0.5; 
+skyUniforms['mieCoefficient'].value = 0.005;
+skyUniforms['mieDirectionalG'].value = 0.8;
 
-// Generate new terrain whenever spacebar is pressed
-window.addEventListener('keydown', (e) => {
-    if (e.key === ' ' || e.keyCode === 32) {
-        generateNewMap();
-        updateViewer();
-    }
+// Set Sun Position
+const elevation = 25;
+const azimuth = 180;
+const phi = THREE.MathUtils.degToRad(90 - elevation);
+const theta = THREE.MathUtils.degToRad(azimuth);
+sun.setFromSphericalCoords(1, phi, theta);
+sky.material.uniforms['sunPosition'].value.copy(sun);
+
+// Lighting
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambientLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, 1.0);
+dirLight.position.copy(sun).multiplyScalar(100); // Put the light where the sun is
+scene.add(dirLight);
+
+
+// Terrain Mesh Setup
+const geometry = new THREE.PlaneGeometry(maxCoord, maxCoord, terrainGridSize, terrainGridSize);
+geometry.rotateX(-Math.PI / 2);
+geometry.translate(maxCoord / 2, 0, maxCoord / 2);
+
+const material = new THREE.MeshStandardMaterial({
+    vertexColors: true,
+    roughness: 0.8,
+    flatShading: true
 });
 
-// Launch the window
-function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
+const terrainMesh = new THREE.Mesh(geometry, material);
+scene.add(terrainMesh);
+
+// Generate a new map
+function generateNewMap() {
+    // Create Perlin noise generators for each octave
+    const noiseLevels = [];
+    for (let i = 0; i < NUM_OCTAVES; i++) {
+        noiseLevels.push(new PerlinNoise(terrainGridSize));
+    }
+
+    // Calculate the colors of the terrain
+    const colors = generateTerrain(noiseLevels, geometry, maxCoord);
+
+    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+    
+    // Update the geometry
+    geometry.attributes.position.needsUpdate = true; 
+    geometry.computeVertexNormals(); 
 }
-animate();
+
+// Initialize
+generateNewMap();
+
+// Event Listeners
+window.addEventListener('keydown', (e) => {
+    if (e.code === 'Space') {
+        generateNewMap();
+    }
+});
 
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+// Render Loop
+function animate() {
+    requestAnimationFrame(animate);
+    
+    controls.update();
+    renderer.render(scene, camera);
+}
+animate();

@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perlin Noise Grid</title>
+    <title>Procedural Terrain</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #222; }
-        canvas { display: block; }
+        body { margin: 0; overflow: hidden; background-color: #87CEEB; }
+        #info { position: absolute; top: 10px; width: 100%; text-align: center; color: white; font-family: sans-serif; font-weight: bold; text-shadow: 1px 1px 2px black; pointer-events: none; }
     </style>
+</head>
+<body>
+    <div id="info">Press SPACEBAR to generate new terrain</div>
     
     <script type="importmap">
         {
@@ -17,8 +19,7 @@
             }
         }
     </script>
-</head>
-<body>
+
     <script type="module" src="./main.js"></script>
 </body>
 </html>
