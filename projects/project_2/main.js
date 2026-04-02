@@ -62,6 +62,7 @@ const material = new THREE.MeshStandardMaterial({
     vertexColors: true,
     roughness: 0.8,
     flatShading: true,
+    side: THREE.DoubleSide
 });
 
 const terrainMesh = new THREE.Mesh(geometry, material);
