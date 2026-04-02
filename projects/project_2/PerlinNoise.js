@@ -1,3 +1,4 @@
+// Inspiration taken from https://garagefarm.net/blog/perlin-noise-implementation-procedural-generation-and-simplex-noise
 export class PerlinNoise {
     constructor(n) {
         this.n = n; // Number of grid points in each dimension
