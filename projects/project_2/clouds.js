@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { PerlinNoise } from './perlinNoise.js';
+import { PerlinNoise } from './PerlinNoise.js';
 
 export class CloudLayer {
     constructor(size, altitude, terrainSize) {
