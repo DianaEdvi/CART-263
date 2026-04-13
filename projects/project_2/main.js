@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { Sky } from 'three/addons/objects/Sky.js'; 
-import { PerlinNoise } from './perlinNoise.js';
-import {NUM_OCTAVES, generateTerrain } from './terrain.js';
+import { PerlinNoise } from './PerlinNoise.js';
+import {NUM_OCTAVES, generateTerrain } from './Terrain.js';
 import { CloudLayer } from './clouds.js'; 
 
 const terrainGridSize = 1000; 
